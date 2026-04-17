@@ -1,7 +1,6 @@
 package com.project.course_registration_system.core.course.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -9,8 +8,8 @@ import static org.mockito.Mockito.when;
 
 import com.project.course_registration_system.core.course.domain.Course;
 import com.project.course_registration_system.core.course.domain.CourseStatus;
-import com.project.course_registration_system.core.course.dto.CourseResponse;
-import com.project.course_registration_system.core.course.dto.CreateCourseRequest;
+import com.project.course_registration_system.core.course.dto.response.CourseResponse;
+import com.project.course_registration_system.core.course.dto.request.CreateCourseRequest;
 import com.project.course_registration_system.core.course.repository.CourseRepository;
 import java.time.LocalDate;
 import org.junit.jupiter.api.DisplayName;
