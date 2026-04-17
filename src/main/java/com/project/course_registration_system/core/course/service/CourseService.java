@@ -2,13 +2,18 @@ package com.project.course_registration_system.core.course.service;
 
 import com.project.course_registration_system.core.course.domain.Course;
 import com.project.course_registration_system.core.course.domain.CourseStatus;
-import com.project.course_registration_system.core.course.dto.CourseResponse;
-import com.project.course_registration_system.core.course.dto.CreateCourseRequest;
+import com.project.course_registration_system.core.course.dto.response.CourseResponse;
+import com.project.course_registration_system.core.course.dto.request.CreateCourseRequest;
+import com.project.course_registration_system.core.course.dto.response.CourseSummaryResponse;
 import com.project.course_registration_system.core.course.repository.CourseRepository;
+import java.util.Collections;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -32,4 +37,7 @@ public class CourseService {
         return CourseResponse.from(saved, 0L);
     }
 
+    public List<CourseSummaryResponse> getList(CourseStatus status) {
+        return courseRepository.getCourseSummaries(status);
+    }
 }
