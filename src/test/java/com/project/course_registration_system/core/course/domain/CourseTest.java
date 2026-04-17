@@ -60,6 +60,7 @@ class CourseTest {
     }
 
     @Test
+    @DisplayName("강의 등록 테스트: 실패[가격이 마이너스일 경우]")
     void create_course_fail_invalidPrice() throws Exception {
         // given
         Long minusPrice = -1L;
@@ -81,6 +82,7 @@ class CourseTest {
     }
 
     @Test
+    @DisplayName("강의 등록 테스트: 실패[정원이 마이너스일 경우]")
     void create_course_fail_invalidCapacity() throws Exception {
         // given
         int minusCapacity = -1;
@@ -101,4 +103,27 @@ class CourseTest {
                 .hasMessage(CourseErrorCode.INVALID_COURSE_CAPACITY.getMessage());
     }
 
+    @Test
+    @DisplayName("강의 상태 변경 테스트: 성공")
+    void change_status_success() throws Exception {
+        // given
+        CourseStatus newStatus = CourseStatus.OPEN;
+
+        Course course = new Course().builder()
+                .title("테스트 강의")
+                .description("설명")
+                .price(1000L)
+                .capacity(10)
+                .creatorId(1L)
+                .startDate(LocalDate.of(2026, 4, 16))
+                .endDate(LocalDate.of(2026, 4, 21))
+                .status(CourseStatus.DRAFT)
+                .build();
+
+        // when
+        course.changeStatus(newStatus);
+
+        // then
+        assertThat(course.getStatus()).isEqualTo(newStatus);
+    }
 }
