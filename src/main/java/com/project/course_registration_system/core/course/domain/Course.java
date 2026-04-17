@@ -71,7 +71,7 @@ public class Course extends BaseTimeEntity {
             throw new BaseException(CourseErrorCode.INVALID_COURSE_PRICE);
         }
         if (capacity <= 0) {
-            throw new BaseException(CourseErrorCode.INVALID_COURSE_PERIOD);
+            throw new BaseException(CourseErrorCode.INVALID_COURSE_CAPACITY);
         }
 
         this.title = title;
