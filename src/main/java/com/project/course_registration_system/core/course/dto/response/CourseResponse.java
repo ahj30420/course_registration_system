@@ -1,4 +1,4 @@
-package com.project.course_registration_system.core.course.dto;
+package com.project.course_registration_system.core.course.dto.response;
 
 import com.project.course_registration_system.core.course.domain.Course;
 import com.project.course_registration_system.core.course.domain.CourseStatus;
