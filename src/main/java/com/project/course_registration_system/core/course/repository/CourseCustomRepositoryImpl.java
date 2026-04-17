@@ -1,4 +1,4 @@
-package com.project.course_registration_system.core.course.repository.jpa;
+package com.project.course_registration_system.core.course.repository;
 
 import static com.project.course_registration_system.core.course.domain.QCourse.course;
 

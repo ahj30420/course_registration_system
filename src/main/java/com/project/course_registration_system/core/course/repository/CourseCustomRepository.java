@@ -1,4 +1,4 @@
-package com.project.course_registration_system.core.course.repository.jpa;
+package com.project.course_registration_system.core.course.repository;
 
 import com.project.course_registration_system.core.course.domain.CourseStatus;
 import com.project.course_registration_system.core.course.dto.response.CourseSummaryResponse;

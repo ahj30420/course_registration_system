@@ -1,4 +1,4 @@
-package com.project.course_registration_system.core.course.repository.jpa;
+package com.project.course_registration_system.core.course.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -19,7 +19,7 @@ import org.springframework.test.context.jdbc.Sql;
 class CourseJpaRepositoryTest {
 
     @Autowired
-    private CourseJpaRepository sut;
+    private CourseRepository sut;
 
     @Test
     @DisplayName("전체 강의 요약 조회[status == null]")
