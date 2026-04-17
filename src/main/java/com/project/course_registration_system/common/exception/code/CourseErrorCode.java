@@ -17,11 +17,11 @@ public enum CourseErrorCode implements ErrorCode {
 
     @Override
     public HttpStatus getHttpStatus() {
-        return null;
+        return status;
     }
 
     @Override
     public String getMessage() {
-        return "";
+        return message;
     }
 }
