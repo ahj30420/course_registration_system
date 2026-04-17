@@ -84,4 +84,9 @@ public class Course extends BaseTimeEntity {
         this.status = status;
     }
 
+    public void changeStatus(CourseStatus nextStatus) {
+        if (nextStatus != null) {
+            this.status = nextStatus;
+        }
+    }
 }
