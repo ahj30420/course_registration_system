@@ -59,6 +59,18 @@ public class CourseController implements CourseSpec {
     }
 
     @Override
+    @GetMapping("/{courseId}")
+    public ResponseEntity<ApiResponse<CourseResponse>> getDetail(
+            @PathVariable Long courseId
+    ) {
+        CourseResponse data = courseService.getDetail(courseId);
+        ApiResponse<CourseResponse> response = ApiResponse.<CourseResponse>builder()
+                .body(data)
+                .build();
+        return ResponseEntity.ok(response);
+    }
+
+    @Override
     @PatchMapping("/{courseId}/status")
     public ResponseEntity<ApiResponse<CourseResponse>> changeStatus(
             @PathVariable Long courseId,

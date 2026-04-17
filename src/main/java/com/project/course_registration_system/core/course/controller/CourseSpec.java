@@ -53,6 +53,19 @@ public interface CourseSpec {
 
 
     @Operation(
+            summary = "강의 상세 조회",
+            description = "강의 상세 조회입니다."
+    )
+    ResponseEntity<ApiResponse<CourseResponse>> getDetail(
+            @Parameter(
+                    description = "강의 ID",
+                    required = true
+            )
+            @PathVariable Long courseId
+    );
+
+
+    @Operation(
             summary = "강의 상태 변경",
             description = "강의 상태를 변경합니다."
     )
