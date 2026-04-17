@@ -14,6 +14,7 @@ import com.project.course_registration_system.core.course.domain.CourseStatus;
 import com.project.course_registration_system.core.course.dto.request.CreateCourseRequest;
 import com.project.course_registration_system.core.course.dto.response.CourseResponse;
 import com.project.course_registration_system.core.course.repository.CourseRepository;
+import com.project.course_registration_system.core.course.service.fixtures.CourseTestFixture;
 import java.time.LocalDate;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
@@ -74,22 +75,45 @@ class CourseServiceTest {
     }
 
     @Test
+    @DisplayName("강의 상세 조회 테스트: 성공")
+    void get_detail_succecss() throws Exception {
+        // given
+        Long courseId = 1L;
+
+        Course course = CourseTestFixture.create();
+
+        when(courseRepository.findById(courseId)).thenReturn(Optional.of(course));
+
+        // when
+        CourseResponse response = sut.getDetail(courseId);
+
+        // then
+        assertThat(response.status()).isNotNull();
+    }
+
+    @Test
+    @DisplayName("강의 상세 조회 테스트: 실패[강의가 존재하지 않는 경우]")
+    void get_detail_fail_not_found() throws Exception {
+        // given
+        Long courseId = -1L;
+
+        when(courseRepository.findById(courseId)).thenReturn(Optional.empty());
+
+        // when & then
+        assertThatThrownBy(() -> sut.getDetail(courseId))
+                .isInstanceOf(BaseException.class)
+                .hasMessage(CourseErrorCode.COURSE_NOT_FOUND.getMessage());
+    }
+
+
+    @Test
     @DisplayName("강의 상태 변경 테스트: 성공")
     void change_status_success() throws Exception {
         // given
         Long courseId = 1L;
         CourseStatus newStatus = CourseStatus.OPEN;
 
-        Course course = Course.builder()
-                .title("테스트")
-                .description("테스트 입니다.")
-                .price(1000L)
-                .capacity(10)
-                .creatorId(1L)
-                .startDate(LocalDate.of(2026, 4, 16))
-                .endDate(LocalDate.of(2026, 4, 21))
-                .status(CourseStatus.DRAFT)
-                .build();
+        Course course = CourseTestFixture.create();
 
         when(courseRepository.findById(courseId)).thenReturn(Optional.of(course));
 
