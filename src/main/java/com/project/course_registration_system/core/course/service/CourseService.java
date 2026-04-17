@@ -42,6 +42,11 @@ public class CourseService {
         return courseRepository.getCourseSummaries(status);
     }
 
+    public CourseResponse getDetail(Long courseId) {
+        Course course = getCourse(courseId);
+        return CourseResponse.from(course, currentEnrollemntCount(courseId));
+    }
+
     @Transactional
     public CourseResponse changeStatus(Long courseId, CourseStatus status) {
         Course course = getCourse(courseId);
@@ -58,4 +63,5 @@ public class CourseService {
     private long currentEnrollemntCount(Long courseId) {
         return 0;
     }
+
 }
