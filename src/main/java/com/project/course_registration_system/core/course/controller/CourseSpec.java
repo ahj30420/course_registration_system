@@ -1,14 +1,18 @@
 package com.project.course_registration_system.core.course.controller;
 
 import com.project.course_registration_system.common.response.ApiResponse;
-import com.project.course_registration_system.core.course.dto.CourseResponse;
-import com.project.course_registration_system.core.course.dto.CreateCourseRequest;
+import com.project.course_registration_system.core.course.domain.CourseStatus;
+import com.project.course_registration_system.core.course.dto.response.CourseResponse;
+import com.project.course_registration_system.core.course.dto.request.CreateCourseRequest;
+import com.project.course_registration_system.core.course.dto.response.CourseSummaryResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Tag(name = "강의 API", description = "강의 관련 API 명세")
 public interface CourseSpec {
@@ -30,5 +34,17 @@ public interface CourseSpec {
                     example = "1"
             )
             @RequestHeader("CREATOR-ID") Long creatorId
+    );
+
+    @Operation(
+            summary = "강의 목록 조회",
+            description = "강의 목록을 조회합니다(with. 강의 상태)"
+    )
+    ResponseEntity<ApiResponse<List<CourseSummaryResponse>>> getList(
+            @Parameter(
+                    description = "강의 상태",
+                    required = false
+            )
+            @RequestParam CourseStatus status
     );
 }
