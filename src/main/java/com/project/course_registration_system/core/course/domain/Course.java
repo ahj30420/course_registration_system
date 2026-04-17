@@ -67,6 +67,9 @@ public class Course extends BaseTimeEntity {
         if (startDate.isAfter(endDate)) {
             throw new BaseException(CourseErrorCode.INVALID_COURSE_PERIOD);
         }
+        if (price <= 0) {
+            throw new BaseException(CourseErrorCode.INVALID_COURSE_PRICE);
+        }
         if (capacity <= 0) {
             throw new BaseException(CourseErrorCode.INVALID_COURSE_PERIOD);
         }
