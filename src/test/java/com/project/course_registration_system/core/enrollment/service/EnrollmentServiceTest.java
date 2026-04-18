@@ -20,6 +20,7 @@ import com.project.course_registration_system.core.enrollment.repository.Enrollm
 import com.project.course_registration_system.core.enrollment.repository.WaitlistRepository;
 import com.project.course_registration_system.core.fixtures.CourseTestFixture;
 import com.project.course_registration_system.core.fixtures.EnrollmentTestFixture;
+import com.project.course_registration_system.core.fixtures.WaitlistTestFixture;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -151,4 +152,76 @@ class EnrollmentServiceTest {
                 .hasMessage(EnrollmentErrorCode.ENROLLMENT_NOT_FOUND.getMessage());
     }
 
+    @Test
+    @DisplayName("수강 취소 테스트: 성공[PENDING 상태 취소 시 정원 감소 및 대기열 승격 확인]")
+    void cancel_success_and_promote() throws Exception {
+        // given
+        Long enrollmentId = 1L;
+        Long userId = 1L;
+
+        Course course = CourseTestFixture.openCourse(10);
+        course.incrementEnrollmentCount();
+
+        Enrollment enrollment = EnrollmentTestFixture.create(EnrollmentStatus.PENDING);
+        Waitlist nextUser = WaitlistTestFixture.create();
+
+        given(enrollmentRepository.findById(enrollmentId)).willReturn(Optional.of(enrollment));
+        given(courseRepository.findByIdForUpdate(course.getId())).willReturn(Optional.of(course));
+        given(waitlistRepository.findFirstByCourseIdOrderByCreatedAtAsc(course.getId()))
+                .willReturn(Optional.of(nextUser));
+
+        // when
+        EnrollmentResponse response = sut.cancel(enrollmentId, userId);
+
+        // then
+        assertThat(enrollment.getStatus()).isEqualTo(EnrollmentStatus.CANCELLED);
+        assertThat(course.getCurrentEnrollmentCount()).isEqualTo(1);
+
+        verify(waitlistRepository).delete(nextUser);
+        verify(enrollmentRepository).save(any(Enrollment.class));
+        assertThat(response.status()).isEqualTo(EnrollmentStatus.CANCELLED);
+    }
+
+    @Test
+    @DisplayName("수강 취소 테스트: 성공[대기자가 없는 경우 정원만 감소]")
+    void cancel_success_no_waitlist() throws Exception {
+        // given
+        Long enrollmentId = 1L;
+        Long userId = 1L;
+
+        Course course = CourseTestFixture.openCourse(10);
+        course.incrementEnrollmentCount();
+
+        Enrollment enrollment = EnrollmentTestFixture.create(EnrollmentStatus.PENDING);
+
+        given(enrollmentRepository.findById(enrollmentId)).willReturn(Optional.of(enrollment));
+        given(courseRepository.findByIdForUpdate(course.getId())).willReturn(Optional.of(course));
+        given(waitlistRepository.findFirstByCourseIdOrderByCreatedAtAsc(course.getId()))
+                .willReturn(Optional.empty());
+
+        // when
+        EnrollmentResponse response = sut.cancel(enrollmentId, userId);
+
+        // then
+        assertThat(enrollment.getStatus()).isEqualTo(EnrollmentStatus.CANCELLED);
+        assertThat(course.getCurrentEnrollmentCount()).isEqualTo(0);
+        verify(enrollmentRepository, never()).save(any(Enrollment.class));
+        assertThat(response.status()).isEqualTo(EnrollmentStatus.CANCELLED);
+    }
+
+    @Test
+    @DisplayName("수강 취소 테스트: 실패[타인의 신청 내역인 경우]")
+    void cancel_fail_when_is_not_owner() throws Exception {
+        // given
+        Long enrollmentId = 1L;
+        Long otherUserId = 99L;
+        Enrollment enrollment = EnrollmentTestFixture.create(EnrollmentStatus.PENDING);
+
+        given(enrollmentRepository.findById(enrollmentId)).willReturn(Optional.of(enrollment));
+
+        // when & then
+        assertThatThrownBy(() -> sut.cancel(enrollmentId, otherUserId))
+                .isInstanceOf(BaseException.class)
+                .hasMessage(EnrollmentErrorCode.NOT_ENROLLMENT_OWNER.getMessage());
+    }
 }
