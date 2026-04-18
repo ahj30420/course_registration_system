@@ -44,4 +44,14 @@ public class EnrollmentController implements EnrollmentSpec {
         return ResponseEntity.ok().body(apiResponse);
     }
 
+    @Override
+    @PostMapping("/{enrollmentId}/cancel")
+    public ResponseEntity<ApiResponse<EnrollmentResponse>> cancel(
+            @PathVariable Long enrollmentId,
+            @RequestHeader("USER-ID") Long userId
+    ) {
+        EnrollmentResponse data = enrollmentService.cancel(enrollmentId, userId);
+        ApiResponse<EnrollmentResponse> apiResponse = new ApiResponse<>(data);
+        return ResponseEntity.ok().body(apiResponse);
+    }
 }
