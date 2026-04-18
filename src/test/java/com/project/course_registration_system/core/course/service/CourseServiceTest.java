@@ -14,7 +14,7 @@ import com.project.course_registration_system.core.course.domain.CourseStatus;
 import com.project.course_registration_system.core.course.dto.request.CreateCourseRequest;
 import com.project.course_registration_system.core.course.dto.response.CourseResponse;
 import com.project.course_registration_system.core.course.repository.CourseRepository;
-import com.project.course_registration_system.core.course.service.fixtures.CourseTestFixture;
+import com.project.course_registration_system.core.fixtures.CourseTestFixture;
 import java.time.LocalDate;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
@@ -80,7 +80,7 @@ class CourseServiceTest {
         // given
         Long courseId = 1L;
 
-        Course course = CourseTestFixture.create();
+        Course course = CourseTestFixture.create(CourseStatus.DRAFT);
 
         when(courseRepository.findById(courseId)).thenReturn(Optional.of(course));
 
@@ -113,7 +113,7 @@ class CourseServiceTest {
         Long courseId = 1L;
         CourseStatus newStatus = CourseStatus.OPEN;
 
-        Course course = CourseTestFixture.create();
+        Course course = CourseTestFixture.create(CourseStatus.DRAFT);
 
         when(courseRepository.findById(courseId)).thenReturn(Optional.of(course));
 

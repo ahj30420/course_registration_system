@@ -73,8 +73,8 @@ class CourseTest {
                         .price(minusPrice)
                         .capacity(10)
                         .creatorId(1L)
-                        .startDate(LocalDate.of(2026, 4, 16))
-                        .endDate(LocalDate.of(2026, 4, 21))
+                        .startDate(LocalDate.now())
+                        .endDate(LocalDate.now().plusDays(30))
                         .status(CourseStatus.DRAFT)
                         .build())
                 .isInstanceOf(BaseException.class)
@@ -95,8 +95,8 @@ class CourseTest {
                         .price(1000L)
                         .capacity(minusCapacity)
                         .creatorId(1L)
-                        .startDate(LocalDate.of(2026, 4, 16))
-                        .endDate(LocalDate.of(2026, 4, 21))
+                        .startDate(LocalDate.now())
+                        .endDate(LocalDate.now().plusDays(30))
                         .status(CourseStatus.DRAFT)
                         .build())
                 .isInstanceOf(BaseException.class)
@@ -115,8 +115,8 @@ class CourseTest {
                 .price(1000L)
                 .capacity(10)
                 .creatorId(1L)
-                .startDate(LocalDate.of(2026, 4, 16))
-                .endDate(LocalDate.of(2026, 4, 21))
+                .startDate(LocalDate.now())
+                .endDate(LocalDate.now().plusDays(30))
                 .status(CourseStatus.DRAFT)
                 .build();
 
@@ -126,4 +126,81 @@ class CourseTest {
         // then
         assertThat(course.getStatus()).isEqualTo(newStatus);
     }
+
+    @Test
+    @DisplayName("수강 신청 가능 여부 확인: 정원이 남았을 때 성공")
+    void hasCapacity_success() throws Exception {
+        // given
+        Course course = new Course().builder()
+                .title("테스트 강의")
+                .description("설명")
+                .price(1000L)
+                .capacity(10)
+                .creatorId(1L)
+                .startDate(LocalDate.now())
+                .endDate(LocalDate.now().plusDays(30))
+                .status(CourseStatus.DRAFT)
+                .build();
+
+        // when & then
+        assertThat(course.hasCapacity()).isTrue();
+    }
+
+    @Test
+    @DisplayName("인원수 증가 테스트: 성공")
+    void incrementEnrollmentCount_success() {
+        // given
+        Course course = Course.builder()
+                .capacity(10)
+                .price(1000L)
+                .startDate(LocalDate.now())
+                .endDate(LocalDate.now().plusDays(30))
+                .status(CourseStatus.OPEN)
+                .build();
+
+        // when
+        course.incrementEnrollmentCount();
+
+        // then
+        assertThat(course.getCurrentEnrollmentCount()).isEqualTo(1);
+    }
+
+    @Test
+    @DisplayName("인원수 증가 테스트: 실패[정원 초과 시 예외 발생]")
+    void incrementEnrollmentCount_fail_overflow() {
+        // given
+        Course course = Course.builder()
+                .capacity(1)
+                .price(1000L)
+                .startDate(LocalDate.now())
+                .endDate(LocalDate.now().plusDays(30))
+                .status(CourseStatus.OPEN)
+                .build();
+        course.incrementEnrollmentCount();
+
+        // when & then
+        assertThatThrownBy(course::incrementEnrollmentCount)
+                .isInstanceOf(BaseException.class)
+                .hasMessage(CourseErrorCode.COURSE_CAPACITY_EXCEEDED.getMessage());
+    }
+
+
+    @Test
+    @DisplayName("수강 신청 가능 여부 확인: 정원이 가득 찼을 때 실패")
+    void hasCapacity_fail_when_full() {
+        // given
+        Course course = Course.builder()
+                .capacity(1)
+                .price(1000L)
+                .startDate(LocalDate.now())
+                .endDate(LocalDate.now().plusDays(30))
+                .status(CourseStatus.OPEN)
+                .build();
+
+        course.incrementEnrollmentCount();
+
+        // when & then
+        assertThat(course.hasCapacity()).isFalse();
+    }
+
 }
