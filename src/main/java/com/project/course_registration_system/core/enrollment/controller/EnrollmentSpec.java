@@ -31,4 +31,25 @@ public interface EnrollmentSpec {
             )
             @RequestHeader("USER-ID") Long userId
     );
+
+
+    @Operation(
+            summary = "수강 신청",
+            description = "수강 신청을 생성합니다. 생성자는 헤더(USER-ID)로 전달됩니다."
+    )
+    ResponseEntity<ApiResponse<EnrollmentResponse>> confirm(
+            @Parameter(
+                    description = "수강 신청 ID",
+                    required = true,
+                    example = "1"
+            )
+            @PathVariable Long enrollmentId,
+
+            @Parameter(
+                    description = "수강생 ID (Header)",
+                    required = true,
+                    example = "1"
+            )
+            @RequestHeader("USER-ID") Long userId
+    );
 }

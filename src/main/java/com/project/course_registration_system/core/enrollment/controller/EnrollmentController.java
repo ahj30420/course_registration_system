@@ -33,4 +33,15 @@ public class EnrollmentController implements EnrollmentSpec {
         return ResponseEntity.created(location).body(apiResponse);
     }
 
+    @Override
+    @PostMapping("/{enrollmentId}/confirm")
+    public ResponseEntity<ApiResponse<EnrollmentResponse>> confirm(
+            @PathVariable Long enrollmentId,
+            @RequestHeader("USER-ID") Long userId
+    ) {
+        EnrollmentResponse data = enrollmentService.confirm(enrollmentId, userId);
+        ApiResponse<EnrollmentResponse> apiResponse = new ApiResponse<>(data);
+        return ResponseEntity.ok().body(apiResponse);
+    }
+
 }
