@@ -4,15 +4,14 @@ import com.project.course_registration_system.common.response.ApiResponse;
 import com.project.course_registration_system.common.util.UrlCreator;
 import com.project.course_registration_system.core.course.domain.CourseStatus;
 import com.project.course_registration_system.core.course.dto.UpdateCourseStatusRequest;
-import com.project.course_registration_system.core.course.dto.response.CourseResponse;
 import com.project.course_registration_system.core.course.dto.request.CreateCourseRequest;
+import com.project.course_registration_system.core.course.dto.response.CourseResponse;
 import com.project.course_registration_system.core.course.dto.response.CourseSummaryResponse;
 import com.project.course_registration_system.core.course.service.CourseService;
 import jakarta.validation.Valid;
 import java.net.URI;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -40,9 +39,7 @@ public class CourseController implements CourseSpec {
     ) {
         CourseResponse data = courseService.create(request, creatorId);
         URI location = UrlCreator.createUri(DEFAULT, data.id());
-        ApiResponse<CourseResponse> response = ApiResponse.<CourseResponse>builder()
-                .body(data)
-                .build();
+        ApiResponse<CourseResponse> response = new ApiResponse<>(data);
         return ResponseEntity.created(location).body(response);
     }
 
@@ -52,9 +49,7 @@ public class CourseController implements CourseSpec {
             @RequestParam(required = false) CourseStatus status
     ) {
         List<CourseSummaryResponse> data = courseService.getList(status);
-        ApiResponse<List<CourseSummaryResponse>> response = ApiResponse.<List<CourseSummaryResponse>>builder()
-                .body(data)
-                .build();
+        ApiResponse<List<CourseSummaryResponse>> response = new ApiResponse<>(data);
         return ResponseEntity.ok(response);
     }
 
@@ -64,9 +59,7 @@ public class CourseController implements CourseSpec {
             @PathVariable Long courseId
     ) {
         CourseResponse data = courseService.getDetail(courseId);
-        ApiResponse<CourseResponse> response = ApiResponse.<CourseResponse>builder()
-                .body(data)
-                .build();
+        ApiResponse<CourseResponse> response = new ApiResponse<>(data);
         return ResponseEntity.ok(response);
     }
 
@@ -77,9 +70,7 @@ public class CourseController implements CourseSpec {
             @Valid @RequestBody UpdateCourseStatusRequest request
     ) {
         CourseResponse data = courseService.changeStatus(courseId, request.status());
-        ApiResponse<CourseResponse> response = ApiResponse.<CourseResponse>builder()
-                .body(data)
-                .build();
+        ApiResponse<CourseResponse> response = new ApiResponse<>(data);
         return ResponseEntity.ok(response);
     }
 }
