@@ -1,6 +1,8 @@
 package com.project.course_registration_system.core.enrollment.domain;
 
 import com.project.course_registration_system.common.audting.BaseTimeEntity;
+import com.project.course_registration_system.common.exception.BaseException;
+import com.project.course_registration_system.common.exception.code.EnrollmentErrorCode;
 import com.project.course_registration_system.core.course.domain.Course;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -55,5 +57,17 @@ public class Enrollment extends BaseTimeEntity {
         this.course = course;
         this.userId = userId;
         this.status = status;
+    }
+
+    public void confirm() {
+        if (this.status != EnrollmentStatus.PENDING) {
+            throw new BaseException(EnrollmentErrorCode.ENROLLMENT_NOT_PENDING);
+        }
+        this.confirmAt = LocalDateTime.now();
+        this.status = EnrollmentStatus.CONFIRMED;
+    }
+
+    public boolean isOwner(Long userId) {
+        return this.userId.equals(userId);
     }
 }

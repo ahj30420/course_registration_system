@@ -83,4 +83,22 @@ public class EnrollmentService {
         return EnrollmentResponse.from(waitlist);
     }
 
+    @Transactional
+    public EnrollmentResponse confirm(Long enrollmentId, Long userId) {
+        Enrollment enrollment = getEnrollmentOrThrow(enrollmentId);
+        validateEnrollmentOwner(enrollment, userId);
+        enrollment.confirm();
+        return EnrollmentResponse.from(enrollment);
+    }
+
+    private Enrollment getEnrollmentOrThrow(Long enrollmentId) {
+        return enrollmentRepository.findById(enrollmentId)
+                .orElseThrow(() -> new BaseException(EnrollmentErrorCode.ENROLLMENT_NOT_FOUND));
+    }
+
+    private void validateEnrollmentOwner(Enrollment enrollment, Long userId) {
+        if (!enrollment.isOwner(userId)) {
+            throw new BaseException(EnrollmentErrorCode.NOT_ENROLLMENT_OWNER);
+        }
+    }
 }
