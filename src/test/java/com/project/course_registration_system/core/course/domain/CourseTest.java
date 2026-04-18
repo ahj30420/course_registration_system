@@ -5,6 +5,9 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.project.course_registration_system.common.exception.BaseException;
 import com.project.course_registration_system.common.exception.code.CourseErrorCode;
+import com.project.course_registration_system.core.enrollment.domain.Enrollment;
+import com.project.course_registration_system.core.enrollment.domain.EnrollmentStatus;
+import com.project.course_registration_system.core.fixtures.CourseTestFixture;
 import java.time.LocalDate;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
@@ -201,6 +204,29 @@ class CourseTest {
 
         // when & then
         assertThat(course.hasCapacity()).isFalse();
+    }
+
+    @Test
+    @DisplayName("강의 권한 테스트: 성공")
+    void owner_check_success() throws Exception {
+        // given
+        Long creator = 1L;
+        Course course = Course.builder()
+                .title("테스트 강의")
+                .description("설명")
+                .price(1000L)
+                .capacity(10)
+                .creatorId(creator)
+                .startDate(LocalDate.now())
+                .endDate(LocalDate.now().plusDays(30))
+                .status(CourseStatus.DRAFT)
+                .build();
+
+        // when
+        boolean isOnwer = course.isOwner(creator);
+
+        // then
+        assertThat(isOnwer).isTrue();
     }
 
 }

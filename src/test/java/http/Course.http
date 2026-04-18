@@ -21,6 +21,7 @@ GET http://localhost:8080/api/courses/1
 ### 강의 상태 변경
 PATCH http://localhost:8080/api/courses/1/status
 Content-Type: application/json
+CREATOR-ID: 1
 
 {
   "status": "OPEN"

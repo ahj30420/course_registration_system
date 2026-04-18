@@ -67,9 +67,10 @@ public class CourseController implements CourseSpec {
     @PatchMapping("/{courseId}/status")
     public ResponseEntity<ApiResponse<CourseResponse>> changeStatus(
             @PathVariable Long courseId,
+            @RequestHeader("CREATOR-ID") Long creatorId,
             @Valid @RequestBody UpdateCourseStatusRequest request
     ) {
-        CourseResponse data = courseService.changeStatus(courseId, request.status());
+        CourseResponse data = courseService.changeStatus(courseId, creatorId, request.status());
         ApiResponse<CourseResponse> response = new ApiResponse<>(data);
         return ResponseEntity.ok(response);
     }

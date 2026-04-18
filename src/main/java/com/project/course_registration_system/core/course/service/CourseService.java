@@ -2,6 +2,7 @@ package com.project.course_registration_system.core.course.service;
 
 import com.project.course_registration_system.common.exception.BaseException;
 import com.project.course_registration_system.common.exception.code.CourseErrorCode;
+import com.project.course_registration_system.common.exception.code.EnrollmentErrorCode;
 import com.project.course_registration_system.core.course.domain.Course;
 import com.project.course_registration_system.core.course.domain.CourseStatus;
 import com.project.course_registration_system.core.course.dto.request.CreateCourseRequest;
@@ -48,8 +49,9 @@ public class CourseService {
     }
 
     @Transactional
-    public CourseResponse changeStatus(Long courseId, CourseStatus status) {
+    public CourseResponse changeStatus(Long courseId, Long creatorId, CourseStatus status) {
         Course course = getCourseOrThrow(courseId);
+        validateCourseOwner(course, creatorId);
         course.changeStatus(status);
         return CourseResponse.from(course);
     }
@@ -57,5 +59,11 @@ public class CourseService {
     private Course getCourseOrThrow(Long courseId) {
         return courseRepository.findById(courseId)
                 .orElseThrow(() -> new BaseException(CourseErrorCode.COURSE_NOT_FOUND));
+    }
+
+    private void validateCourseOwner(Course course, Long creatorId) {
+        if (!course.isOwner(creatorId)) {
+            throw new BaseException(CourseErrorCode.NOT_ENROLLMENT_OWNER);
+        }
     }
 }

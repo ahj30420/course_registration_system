@@ -108,4 +108,8 @@ public class Course extends BaseTimeEntity {
         }
         this.currentEnrollmentCount++;
     }
+
+    public boolean isOwner(Long creatorId) {
+        return this.creatorId.equals(creatorId);
+    }
 }
