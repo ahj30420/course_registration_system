@@ -13,6 +13,7 @@ import com.project.course_registration_system.core.enrollment.repository.Enrollm
 import com.project.course_registration_system.core.enrollment.repository.WaitlistRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,6 +25,9 @@ public class EnrollmentService {
     private final CourseRepository courseRepository;
     private final EnrollmentRepository enrollmentRepository;
     private final WaitlistRepository waitlistRepository;
+
+    @Value("${enrollment.cancellation-days:7}")
+    private int cancellationDays;
 
     @Transactional
     public EnrollmentResponse enroll(Long courseId, Long userId) {
@@ -100,5 +104,41 @@ public class EnrollmentService {
         if (!enrollment.isOwner(userId)) {
             throw new BaseException(EnrollmentErrorCode.NOT_ENROLLMENT_OWNER);
         }
+    }
+
+    @Transactional
+    public EnrollmentResponse cancel(Long enrollmentId, Long userId) {
+        Enrollment enrollment = getEnrollmentOrThrow(enrollmentId);
+
+        validateEnrollmentOwner(enrollment, userId);
+
+        boolean wasActive = enrollment.isActive();
+
+        enrollment.cancel(cancellationDays);
+
+        if (wasActive) {
+            Course course = courseRepository.findByIdForUpdate(enrollment.getCourse().getId())
+                    .orElseThrow(() -> new BaseException(CourseErrorCode.COURSE_NOT_FOUND));
+            course.decrementEnrollmentCount();
+            promoteFromWaitlist(course);
+        }
+
+        return EnrollmentResponse.from(enrollment);
+    }
+
+    private void promoteFromWaitlist(Course course) {
+        if (!course.hasCapacity()) return;
+
+        waitlistRepository.findFirstByCourseIdOrderByCreatedAtAsc(course.getId())
+                .ifPresent(waitlist -> {
+                   waitlistRepository.delete(waitlist);
+                   course.incrementEnrollmentCount();
+                   Enrollment promoted = Enrollment.builder()
+                           .course(course)
+                           .userId(waitlist.getUserId())
+                           .status(EnrollmentStatus.PENDING)
+                           .build();
+                   enrollmentRepository.save(promoted);
+                });
     }
 }

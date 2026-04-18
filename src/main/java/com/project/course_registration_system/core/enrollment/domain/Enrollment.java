@@ -70,4 +70,21 @@ public class Enrollment extends BaseTimeEntity {
     public boolean isOwner(Long userId) {
         return this.userId.equals(userId);
     }
+
+    public boolean isActive() {
+        return this.status == EnrollmentStatus.PENDING || this.status == EnrollmentStatus.CONFIRMED;
+    }
+
+    public void cancel(int cancellationDays) {
+        if (this.status == EnrollmentStatus.CANCELLED) {
+            throw new BaseException(EnrollmentErrorCode.ENROLLMENT_NOT_CANCELLABLE);
+        }
+        if (this.status == EnrollmentStatus.CONFIRMED) {
+            if (confirmAt == null || LocalDateTime.now().isAfter(confirmAt.plusDays(cancellationDays))) {
+                throw new BaseException(EnrollmentErrorCode.CANCELLATION_PERIOD_EXPIRED);
+            }
+        }
+        this.status = EnrollmentStatus.CANCELLED;
+        this.cancelAt = LocalDateTime.now();
+    }
 }

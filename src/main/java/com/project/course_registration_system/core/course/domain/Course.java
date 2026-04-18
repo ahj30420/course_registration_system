@@ -112,4 +112,10 @@ public class Course extends BaseTimeEntity {
     public boolean isOwner(Long creatorId) {
         return this.creatorId.equals(creatorId);
     }
+
+    public void decrementEnrollmentCount() {
+        if (this.currentEnrollmentCount > 0) {
+            this.currentEnrollmentCount--;
+        }
+    }
 }
