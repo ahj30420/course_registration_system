@@ -43,18 +43,18 @@ public class CourseService {
     }
 
     public CourseResponse getDetail(Long courseId) {
-        Course course = getCourse(courseId);
+        Course course = getCourseOrThrow(courseId);
         return CourseResponse.from(course);
     }
 
     @Transactional
     public CourseResponse changeStatus(Long courseId, CourseStatus status) {
-        Course course = getCourse(courseId);
+        Course course = getCourseOrThrow(courseId);
         course.changeStatus(status);
         return CourseResponse.from(course);
     }
 
-    private Course getCourse(Long courseId) {
+    private Course getCourseOrThrow(Long courseId) {
         return courseRepository.findById(courseId)
                 .orElseThrow(() -> new BaseException(CourseErrorCode.COURSE_NOT_FOUND));
     }
