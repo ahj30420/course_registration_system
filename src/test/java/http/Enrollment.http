@@ -1,4 +1,9 @@
 ### 수강 신청
 POST http://localhost:8080/api/courses/1/enrollments
 Content-Type: application/json
-USER-ID: 3
+USER-ID: 1
+
+### 강의 상태 변경
+POST http://localhost:8080/api/1/confirm
+Content-Type: application/json
+USER-ID: 1
