@@ -23,5 +23,5 @@ PATCH http://localhost:8080/api/courses/1/status
 Content-Type: application/json
 
 {
-  "status": "OP"
+  "status": "OPEN"
 }
