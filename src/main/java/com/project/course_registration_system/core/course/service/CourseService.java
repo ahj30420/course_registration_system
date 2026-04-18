@@ -35,7 +35,7 @@ public class CourseService {
                 .status(CourseStatus.DRAFT)
                 .build();
         Course saved = courseRepository.save(course);
-        return CourseResponse.from(saved, 0L);
+        return CourseResponse.from(saved);
     }
 
     public List<CourseSummaryResponse> getList(CourseStatus status) {
@@ -44,24 +44,18 @@ public class CourseService {
 
     public CourseResponse getDetail(Long courseId) {
         Course course = getCourse(courseId);
-        return CourseResponse.from(course, currentEnrollemntCount(courseId));
+        return CourseResponse.from(course);
     }
 
     @Transactional
     public CourseResponse changeStatus(Long courseId, CourseStatus status) {
         Course course = getCourse(courseId);
         course.changeStatus(status);
-        return CourseResponse.from(course, currentEnrollemntCount(courseId));
+        return CourseResponse.from(course);
     }
 
     private Course getCourse(Long courseId) {
         return courseRepository.findById(courseId)
                 .orElseThrow(() -> new BaseException(CourseErrorCode.COURSE_NOT_FOUND));
     }
-
-    // TODO 수강 신청 기능 구현 이후 작업 예정
-    private long currentEnrollemntCount(Long courseId) {
-        return 0;
-    }
-
 }

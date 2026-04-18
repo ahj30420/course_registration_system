@@ -16,7 +16,7 @@ public record CourseResponse(
         LocalDate endDate,
         CourseStatus status
 ) {
-    public static CourseResponse from(Course course, long currentEnrollmentCount) {
+    public static CourseResponse from(Course course) {
         return new CourseResponse(
                 course.getId(),
                 course.getTitle(),
@@ -24,7 +24,7 @@ public record CourseResponse(
                 course.getPrice(),
                 course.getCapacity(),
                 course.getCreatorId(),
-                currentEnrollmentCount,
+                course.getCurrentEnrollmentCount(),
                 course.getStartDate(),
                 course.getEndDate(),
                 course.getStatus()

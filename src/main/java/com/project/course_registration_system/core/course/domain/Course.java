@@ -40,6 +40,9 @@ public class Course extends BaseTimeEntity {
     @Column(nullable = false)
     private Integer capacity;
 
+    @Column(nullable = false)
+    private int currentEnrollmentCount;
+
     @Column(name = "creator_id", nullable = false)
     private Long creatorId;
 
@@ -82,11 +85,27 @@ public class Course extends BaseTimeEntity {
         this.startDate = startDate;
         this.endDate = endDate;
         this.status = status;
+        this.currentEnrollmentCount = 0;
     }
 
     public void changeStatus(CourseStatus nextStatus) {
         if (nextStatus != null) {
             this.status = nextStatus;
         }
+    }
+
+    public boolean isOpen() {
+        return this.status == CourseStatus.OPEN;
+    }
+
+    public boolean hasCapacity() {
+        return this.capacity > this.currentEnrollmentCount;
+    }
+
+    public void incrementEnrollmentCount() {
+        if (!hasCapacity()) {
+            throw new BaseException(CourseErrorCode.COURSE_CAPACITY_EXCEEDED);
+        }
+        this.currentEnrollmentCount++;
     }
 }
