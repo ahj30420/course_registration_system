@@ -4,6 +4,7 @@ import com.project.course_registration_system.common.response.ApiResponse;
 import com.project.course_registration_system.common.response.PageResponse;
 import com.project.course_registration_system.core.enrollment.dto.EnrollmentResponse;
 import com.project.course_registration_system.core.enrollment.dto.MyEnrollmentResponse;
+import com.project.course_registration_system.core.enrollment.dto.MyWaitlistRankResponse;
 import com.project.course_registration_system.core.enrollment.dto.MyWaitlistResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -110,5 +111,26 @@ public interface EnrollmentSpec {
             @RequestHeader("USER-ID") Long userId,
 
             @PageableDefault Pageable pageable
+    );
+
+
+    @Operation(
+            summary = "내 대기열 순번 조회",
+            description = "대기열 순번을 조회합니다."
+    )
+    ResponseEntity<ApiResponse<MyWaitlistRankResponse>> getWaitlistRank(
+            @Parameter(
+                    description = "대기열 ID",
+                    required = true,
+                    example = "1"
+            )
+            @PathVariable Long waitlistId,
+
+            @Parameter(
+                    description = "수강생 ID (Header)",
+                    required = true,
+                    example = "1"
+            )
+            @RequestHeader("USER-ID") Long userId
     );
 }

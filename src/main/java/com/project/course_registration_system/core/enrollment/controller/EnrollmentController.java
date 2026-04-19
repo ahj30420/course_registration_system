@@ -5,6 +5,7 @@ import com.project.course_registration_system.common.response.PageResponse;
 import com.project.course_registration_system.common.util.UrlCreator;
 import com.project.course_registration_system.core.enrollment.dto.EnrollmentResponse;
 import com.project.course_registration_system.core.enrollment.dto.MyEnrollmentResponse;
+import com.project.course_registration_system.core.enrollment.dto.MyWaitlistRankResponse;
 import com.project.course_registration_system.core.enrollment.dto.MyWaitlistResponse;
 import com.project.course_registration_system.core.enrollment.service.EnrollmentService;
 import java.net.URI;
@@ -69,7 +70,8 @@ public class EnrollmentController implements EnrollmentSpec {
             @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
     ) {
         PageResponse<MyEnrollmentResponse> data = enrollmentService.getMyEnrollments(userId, pageable);
-        return ResponseEntity.ok(new ApiResponse<>(data));
+        ApiResponse<PageResponse<MyEnrollmentResponse>> response = new ApiResponse<>(data);
+        return ResponseEntity.ok(response);
     }
 
     @Override
@@ -79,6 +81,18 @@ public class EnrollmentController implements EnrollmentSpec {
             @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
     ) {
         PageResponse<MyWaitlistResponse> data = enrollmentService.getMyWaitlist(userId, pageable);
-        return ResponseEntity.ok(new ApiResponse<>(data));
+        ApiResponse<PageResponse<MyWaitlistResponse>> response = new ApiResponse<>(data);
+        return ResponseEntity.ok(response);
+    }
+
+    @Override
+    @GetMapping("/enrollments/my/waitlist/{waitlistId}/rank")
+    public ResponseEntity<ApiResponse<MyWaitlistRankResponse>> getWaitlistRank(
+            @PathVariable Long waitlistId,
+            @RequestHeader("USER-ID") Long userId
+    ) {
+        MyWaitlistRankResponse data = enrollmentService.getWaitlistRank(waitlistId, userId);
+        ApiResponse<MyWaitlistRankResponse> response = new ApiResponse<>(data);
+        return ResponseEntity.ok(response);
     }
 }
