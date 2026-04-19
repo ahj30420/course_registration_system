@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.project.course_registration_system.core.course.domain.Course;
 import com.project.course_registration_system.core.course.repository.CourseRepository;
 import com.project.course_registration_system.core.enrollment.domain.EnrollmentStatus;
+import com.project.course_registration_system.core.enrollment.dto.EnrollmentResponse;
 import com.project.course_registration_system.core.enrollment.repository.EnrollmentRepository;
 import com.project.course_registration_system.core.enrollment.repository.WaitlistRepository;
 import com.project.course_registration_system.core.fixtures.CourseTestFixture;
@@ -87,16 +88,16 @@ public class EnrollmentServiceUnitTest {
         Course course = courseRepository.save(CourseTestFixture.openCourse(capacity));
 
         Long userA = 1L;
-        enrollmentService.enroll(course.getId(), userA);
+        EnrollmentResponse enrollmentResponse1 = enrollmentService.enroll(course.getId(), userA);
 
         Long userB = 2L;
-        enrollmentService.enroll(course.getId(), userB);
+        EnrollmentResponse enrollmentResponse2 = enrollmentService.enroll(course.getId(), userB);
 
         assertThat(enrollmentRepository.countByCourseId(course.getId())).isEqualTo(1);
         assertThat(waitlistRepository.countByCourseId(course.getId())).isEqualTo(1);
 
         // when
-        enrollmentService.cancel(course.getId(), userA);
+        enrollmentService.cancel(enrollmentResponse1.enrollmentId(), userA);
 
         // then
         assertThat(enrollmentRepository.countByCourseIdAndStatusIn(
