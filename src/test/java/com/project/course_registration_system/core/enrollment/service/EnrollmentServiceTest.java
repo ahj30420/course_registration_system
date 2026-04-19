@@ -9,7 +9,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.project.course_registration_system.common.exception.BaseException;
-import com.project.course_registration_system.common.exception.code.CourseErrorCode;
 import com.project.course_registration_system.common.exception.code.EnrollmentErrorCode;
 import com.project.course_registration_system.common.response.PageResponse;
 import com.project.course_registration_system.core.course.domain.Course;
@@ -19,6 +18,7 @@ import com.project.course_registration_system.core.enrollment.domain.EnrollmentS
 import com.project.course_registration_system.core.enrollment.domain.Waitlist;
 import com.project.course_registration_system.core.enrollment.dto.EnrollmentResponse;
 import com.project.course_registration_system.core.enrollment.dto.MyEnrollmentResponse;
+import com.project.course_registration_system.core.enrollment.dto.MyWaitlistResponse;
 import com.project.course_registration_system.core.enrollment.repository.EnrollmentRepository;
 import com.project.course_registration_system.core.enrollment.repository.WaitlistRepository;
 import com.project.course_registration_system.core.fixtures.CourseTestFixture;
@@ -32,11 +32,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.test.util.ReflectionTestUtils;
 
 @ExtendWith(MockitoExtension.class)
 class EnrollmentServiceTest {
@@ -236,21 +234,46 @@ class EnrollmentServiceTest {
 
     @Test
     @DisplayName("내 수강 신청 목록 테스트: 성공")
-    void getMyEnrollments_returns_page_with_course_brief() {
+    void getMyEnrollments_returns_page() {
+        // tdd
         Long userId = 1L;
         Pageable pageable = PageRequest.of(0, 10);
         Enrollment enrollment = EnrollmentTestFixture.create(EnrollmentStatus.PENDING);
         given(enrollmentRepository.findByUserIdOrderByCreatedAtDesc(userId, pageable))
                 .willReturn(new PageImpl<>(List.of(enrollment), pageable, 1));
 
+        // when
         PageResponse<MyEnrollmentResponse> result = sut.getMyEnrollments(userId, pageable);
 
+        // then
         assertThat(result.content()).hasSize(1);
         assertThat(result.page()).isEqualTo(0);
         assertThat(result.size()).isEqualTo(10);
         assertThat(result.totalElements()).isEqualTo(1);
         assertThat(result.totalPages()).isEqualTo(1);
         assertThat(result.content().getFirst().enrollmentId()).isEqualTo(enrollment.getId());
+    }
+
+    @Test
+    @DisplayName("내 대기열 목록 테스트: 성공")
+    void getMyWaitlist_returns_page() {
+        // given
+        Long userId = 1L;
+        Pageable pageable = PageRequest.of(0, 10);
+        Waitlist waitlist = WaitlistTestFixture.create();
+        given(waitlistRepository.findByUserIdOrderByCreatedAtDesc(userId, pageable))
+                .willReturn(new PageImpl<>(List.of(waitlist), pageable, 1));
+
+        // when
+        PageResponse<MyWaitlistResponse> result = sut.getMyWaitlist(userId, pageable);
+
+        // then
+        assertThat(result.content()).hasSize(1);
+        assertThat(result.page()).isEqualTo(0);
+        assertThat(result.size()).isEqualTo(10);
+        assertThat(result.totalElements()).isEqualTo(1);
+        assertThat(result.totalPages()).isEqualTo(1);
+        assertThat(result.content().getFirst().waitlistId()).isEqualTo(waitlist.getId());
     }
 
 }
