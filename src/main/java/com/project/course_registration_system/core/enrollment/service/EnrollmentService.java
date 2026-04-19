@@ -11,6 +11,7 @@ import com.project.course_registration_system.core.enrollment.domain.EnrollmentS
 import com.project.course_registration_system.core.enrollment.domain.Waitlist;
 import com.project.course_registration_system.core.enrollment.dto.EnrollmentResponse;
 import com.project.course_registration_system.core.enrollment.dto.MyEnrollmentResponse;
+import com.project.course_registration_system.core.enrollment.dto.MyWaitlistResponse;
 import com.project.course_registration_system.core.enrollment.repository.EnrollmentRepository;
 import com.project.course_registration_system.core.enrollment.repository.WaitlistRepository;
 import java.util.List;
@@ -83,7 +84,7 @@ public class EnrollmentService {
 
     private EnrollmentResponse addToWaitlist(Long courseId, Long userId) {
         Waitlist waitlist = Waitlist.builder()
-                .courseId(courseId)
+                .course(courseRepository.getReferenceById(courseId))
                 .userId(userId)
                 .build();
 
@@ -154,5 +155,13 @@ public class EnrollmentService {
         List<MyEnrollmentResponse> content = pageEnrollment.getContent().stream()
                 .map(MyEnrollmentResponse::from).toList();
         return PageResponse.from(pageEnrollment, content);
+    }
+
+    public PageResponse<MyWaitlistResponse> getMyWaitlist(Long userId, Pageable pageable) {
+        Page<Waitlist> pageWaitlist = waitlistRepository.findByUserIdOrderByCreatedAtDesc(userId,
+                pageable);
+        List<MyWaitlistResponse> content = pageWaitlist.getContent().stream()
+                .map(MyWaitlistResponse::from).toList();
+        return PageResponse.from(pageWaitlist, content);
     }
 }
