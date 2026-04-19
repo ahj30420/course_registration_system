@@ -1,12 +1,19 @@
 package com.project.course_registration_system.core.enrollment.controller;
 
 import com.project.course_registration_system.common.response.ApiResponse;
+import com.project.course_registration_system.common.response.PageResponse;
 import com.project.course_registration_system.common.util.UrlCreator;
 import com.project.course_registration_system.core.enrollment.dto.EnrollmentResponse;
+import com.project.course_registration_system.core.enrollment.dto.MyEnrollmentResponse;
 import com.project.course_registration_system.core.enrollment.service.EnrollmentService;
 import java.net.URI;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -29,8 +36,8 @@ public class EnrollmentController implements EnrollmentSpec {
     ) {
         EnrollmentResponse data = enrollmentService.enroll(courseId, userId);
         URI location = UrlCreator.createUri(DEFAULT, data.enrollmentId());
-        ApiResponse<EnrollmentResponse> apiResponse = new ApiResponse<>(data);
-        return ResponseEntity.created(location).body(apiResponse);
+        ApiResponse<EnrollmentResponse> response = new ApiResponse<>(data);
+        return ResponseEntity.created(location).body(response);
     }
 
     @Override
@@ -40,8 +47,8 @@ public class EnrollmentController implements EnrollmentSpec {
             @RequestHeader("USER-ID") Long userId
     ) {
         EnrollmentResponse data = enrollmentService.confirm(enrollmentId, userId);
-        ApiResponse<EnrollmentResponse> apiResponse = new ApiResponse<>(data);
-        return ResponseEntity.ok().body(apiResponse);
+        ApiResponse<EnrollmentResponse> response = new ApiResponse<>(data);
+        return ResponseEntity.ok().body(response);
     }
 
     @Override
@@ -51,7 +58,17 @@ public class EnrollmentController implements EnrollmentSpec {
             @RequestHeader("USER-ID") Long userId
     ) {
         EnrollmentResponse data = enrollmentService.cancel(enrollmentId, userId);
-        ApiResponse<EnrollmentResponse> apiResponse = new ApiResponse<>(data);
-        return ResponseEntity.ok().body(apiResponse);
+        ApiResponse<EnrollmentResponse> response = new ApiResponse<>(data);
+        return ResponseEntity.ok().body(response);
+    }
+
+    @Override
+    @GetMapping("/enrollments/my")
+    public ResponseEntity<ApiResponse<PageResponse<MyEnrollmentResponse>>> getMyEnrollments(
+            @RequestHeader("USER-ID") Long userId,
+            @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
+    ) {
+        PageResponse<MyEnrollmentResponse> data = enrollmentService.getMyEnrollments(userId, pageable);
+        return ResponseEntity.ok(new ApiResponse<>(data));
     }
 }
