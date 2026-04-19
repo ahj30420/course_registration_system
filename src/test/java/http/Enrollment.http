@@ -1,0 +1,26 @@
+### 수강 신청
+POST http://localhost:8080/api/courses/1/enrollments
+Content-Type: application/json
+USER-ID: 1
+
+### 결제 완료 처리
+POST http://localhost:8080/api/1/confirm
+Content-Type: application/json
+USER-ID: 1
+
+### 수강 취소
+POST http://localhost:8080/api/1/cancel
+Content-Type: application/json
+USER-ID: 1
+
+### 내 수강 신청 목록 (페이지네이션: page, size, sort)
+GET http://localhost:8080/api/enrollments/my?page=1&size=1&sort=createdAt,desc
+USER-ID: 1
+
+### 내 대기열 목록 (페이지네이션: page, size, sort)
+GET http://localhost:8080/api/enrollments/my/waitlist?page=0&size=2&sort=createdAt,desc
+USER-ID: 2
+
+### 내 대기열 순번 조회
+GET http://localhost:8080/api/enrollments/my/waitlist/4/rank
+USER-ID: 5

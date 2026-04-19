@@ -77,6 +77,12 @@ public interface CourseSpec {
             @PathVariable Long courseId,
 
             @Parameter(
+                    description = "강사 ID (Header)",
+                    required = true
+            )
+            @RequestHeader("CREATOR-ID") Long creatorId,
+
+            @Parameter(
                     description = "변경된 강의 상태",
                     required = true
             )

@@ -14,7 +14,7 @@ import com.project.course_registration_system.core.course.domain.CourseStatus;
 import com.project.course_registration_system.core.course.dto.request.CreateCourseRequest;
 import com.project.course_registration_system.core.course.dto.response.CourseResponse;
 import com.project.course_registration_system.core.course.repository.CourseRepository;
-import com.project.course_registration_system.core.course.service.fixtures.CourseTestFixture;
+import com.project.course_registration_system.core.fixtures.CourseTestFixture;
 import java.time.LocalDate;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
@@ -80,7 +80,7 @@ class CourseServiceTest {
         // given
         Long courseId = 1L;
 
-        Course course = CourseTestFixture.create();
+        Course course = CourseTestFixture.create(CourseStatus.DRAFT);
 
         when(courseRepository.findById(courseId)).thenReturn(Optional.of(course));
 
@@ -111,14 +111,15 @@ class CourseServiceTest {
     void change_status_success() throws Exception {
         // given
         Long courseId = 1L;
+        Long creatorId = 1L;
         CourseStatus newStatus = CourseStatus.OPEN;
 
-        Course course = CourseTestFixture.create();
+        Course course = CourseTestFixture.create(CourseStatus.DRAFT);
 
         when(courseRepository.findById(courseId)).thenReturn(Optional.of(course));
 
         // when
-        CourseResponse response = sut.changeStatus(courseId, newStatus);
+        CourseResponse response = sut.changeStatus(courseId, creatorId, newStatus);
 
         // then
         assertThat(response.status()).isEqualTo(newStatus);
@@ -126,16 +127,37 @@ class CourseServiceTest {
     }
 
     @Test
+    @DisplayName("강의 상태 변경 테스트: 실패[해당 강의에 권한이 없는 경우]")
+    void change_status_fail_when_is_not_owner() throws Exception {
+        // given
+        Long courseId = 1L;
+        Long creatorId = 2L;
+        CourseStatus newStatus = CourseStatus.OPEN;
+
+        Course course = CourseTestFixture.create(CourseStatus.DRAFT);
+
+        when(courseRepository.findById(courseId)).thenReturn(Optional.of(course));
+
+
+        // when & then
+        assertThatThrownBy(() ->
+                sut.changeStatus(courseId, creatorId, CourseStatus.OPEN))
+                .isInstanceOf(BaseException.class)
+                .hasMessage(CourseErrorCode.NOT_ENROLLMENT_OWNER.getMessage());
+    }
+
+    @Test
     @DisplayName("강의 상태 변경 테스트: 실패[강의가 존재하지 않는 경우]")
     void change_status_fail_not_found() throws Exception {
         // given
         Long courseId = -1L;
+        Long creatorId = 1L;
 
         when(courseRepository.findById(courseId)).thenReturn(Optional.empty());
 
         // when & then
         assertThatThrownBy(() ->
-                sut.changeStatus(courseId, CourseStatus.OPEN))
+                sut.changeStatus(courseId, creatorId, CourseStatus.OPEN))
                 .isInstanceOf(BaseException.class)
                 .hasMessage(CourseErrorCode.COURSE_NOT_FOUND.getMessage());
     }
