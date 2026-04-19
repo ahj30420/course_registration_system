@@ -16,3 +16,7 @@ USER-ID: 1
 ### 내 수강 신청 목록 (페이지네이션: page, size, sort)
 GET http://localhost:8080/api/enrollments/my?page=1&size=1&sort=createdAt,desc
 USER-ID: 1
+
+### 내 대기열 목록 (페이지네이션: page, size, sort)
+GET http://localhost:8080/api/enrollments/my/waitlist?page=0&size=2&sort=createdAt,desc
+USER-ID: 2
