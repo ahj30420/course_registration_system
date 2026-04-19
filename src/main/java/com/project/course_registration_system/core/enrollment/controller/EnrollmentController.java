@@ -5,10 +5,10 @@ import com.project.course_registration_system.common.response.PageResponse;
 import com.project.course_registration_system.common.util.UrlCreator;
 import com.project.course_registration_system.core.enrollment.dto.EnrollmentResponse;
 import com.project.course_registration_system.core.enrollment.dto.MyEnrollmentResponse;
+import com.project.course_registration_system.core.enrollment.dto.MyWaitlistResponse;
 import com.project.course_registration_system.core.enrollment.service.EnrollmentService;
 import java.net.URI;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -69,6 +69,16 @@ public class EnrollmentController implements EnrollmentSpec {
             @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
     ) {
         PageResponse<MyEnrollmentResponse> data = enrollmentService.getMyEnrollments(userId, pageable);
+        return ResponseEntity.ok(new ApiResponse<>(data));
+    }
+
+    @Override
+    @GetMapping("/enrollments/my/waitlist")
+    public ResponseEntity<ApiResponse<PageResponse<MyWaitlistResponse>>> getMyWaitlist(
+            @RequestHeader("USER-ID") Long userId,
+            @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
+    ) {
+        PageResponse<MyWaitlistResponse> data = enrollmentService.getMyWaitlist(userId, pageable);
         return ResponseEntity.ok(new ApiResponse<>(data));
     }
 }
