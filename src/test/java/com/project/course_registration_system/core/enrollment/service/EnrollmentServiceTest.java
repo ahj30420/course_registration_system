@@ -234,7 +234,7 @@ class EnrollmentServiceTest {
 
     @Test
     @DisplayName("내 수강 신청 목록 테스트: 성공")
-    void getMyEnrollments_returns_page() {
+    void get_my_enrollments_returns_page() {
         // tdd
         Long userId = 1L;
         Pageable pageable = PageRequest.of(0, 10);
