@@ -20,3 +20,7 @@ USER-ID: 1
 ### 내 대기열 목록 (페이지네이션: page, size, sort)
 GET http://localhost:8080/api/enrollments/my/waitlist?page=0&size=2&sort=createdAt,desc
 USER-ID: 2
+
+### 내 대기열 순번 조회
+GET http://localhost:8080/api/enrollments/my/waitlist/4/rank
+USER-ID: 5
