@@ -3,8 +3,13 @@
 -- =========================================
 
 -- 기존 테이블 삭제
-DROP TABLE IF EXISTS enrollments;
-DROP TABLE IF EXISTS courses;
+SET REFERENTIAL_INTEGRITY FALSE;
+
+DROP TABLE IF EXISTS waitlists CASCADE;
+DROP TABLE IF EXISTS enrollments CASCADE;
+DROP TABLE IF EXISTS courses CASCADE;
+
+SET REFERENTIAL_INTEGRITY FALSE;
 
 -- =========================================
 -- 테이블 생성
@@ -12,26 +17,49 @@ DROP TABLE IF EXISTS courses;
 
 CREATE TABLE courses
 (
-    id                     BIGINT AUTO_INCREMENT PRIMARY KEY,
-    title                  VARCHAR(100)  NOT NULL,
-    description            VARCHAR(1000) NOT NULL,
-    price                  BIGINT        NOT NULL,
-    capacity               INT           NOT NULL,
-    currentEnrollmentCount INT           NOT NULL,
-    creator_id             BIGINT        NOT NULL,
-    start_date             DATE          NOT NULL,
-    end_date               DATE          NOT NULL,
-    status                 VARCHAR(20)   NOT NULL,
-    created_at             DATETIME,
-    updated_at             DATETIME
+    id                       BIGINT AUTO_INCREMENT PRIMARY KEY,
+    title                    VARCHAR(100)  NOT NULL,
+    description              VARCHAR(1000) NOT NULL,
+    price                    BIGINT        NOT NULL,
+    capacity                 INT           NOT NULL,
+    current_enrollment_count INT           NOT NULL,
+    creator_id               BIGINT        NOT NULL,
+    start_date               DATE          NOT NULL,
+    end_date                 DATE          NOT NULL,
+    status                   VARCHAR(20)   NOT NULL,
+    created_at               DATETIME,
+    updated_at               DATETIME
+);
+
+CREATE TABLE enrollments
+(
+    id         BIGINT AUTO_INCREMENT PRIMARY KEY,
+    course_id  BIGINT      NOT NULL,
+    user_id    BIGINT      NOT NULL,
+    status     VARCHAR(20) NOT NULL,
+    confirm_at DATETIME,
+    cancel_at  DATETIME,
+    created_at DATETIME,
+    updated_at DATETIME,
+    CONSTRAINT uk_enrollment_course_user UNIQUE (course_id, user_id),
+    FOREIGN KEY (course_id) REFERENCES courses (id)
+);
+
+CREATE TABLE waitlists (
+    id         BIGINT AUTO_INCREMENT PRIMARY KEY,
+    course_id  BIGINT NOT NULL,
+    user_id    BIGINT NOT NULL,
+    created_at DATETIME,
+    updated_at DATETIME,
+    FOREIGN KEY (course_id) REFERENCES courses (id)
 );
 
 -- =========================================
 -- 더미 데이터 삽입
 -- =========================================
 
--- COURSES
-INSERT INTO courses (title, description, price, capacity, currentEnrollmentCount, creator_id, start_date, end_date,
+
+INSERT INTO courses (title, description, price, capacity, current_enrollment_count, creator_id, start_date, end_date,
                      status, created_at,
                      updated_at)
 VALUES ('자바 입문', '자바 기초 강의', 10000, 30, 0, 1, '2026-04-20', '2026-05-20', 'OPEN', NOW(), NOW()),
@@ -44,3 +72,16 @@ VALUES ('자바 입문', '자바 기초 강의', 10000, 30, 0, 1, '2026-04-20', 
        ('데이터베이스', 'DB 설계 및 SQL', 27000, 30, 0, 2, '2026-04-28', '2026-05-28', 'OPEN', NOW(), NOW()),
        ('네트워크', '네트워크 기초', 16000, 25, 0, 3, '2026-05-03', '2026-06-03', 'DRAFT', NOW(), NOW()),
        ('클린 코드', '코드 품질 개선', 19000, 20, 0, 1, '2026-04-30', '2026-05-30', 'OPEN', NOW(), NOW());
+
+
+INSERT INTO enrollments (course_id, user_id, status, created_at, updated_at)
+VALUES (1, 1, 'CONFIRMED', '2026-04-01 10:00:00', NOW()),
+       (2, 1, 'PENDING', '2026-04-02 10:00:00', NOW()),
+       (5, 1, 'CONFIRMED', '2026-04-03 10:00:00', NOW()),
+       (6, 1, 'PENDING', '2026-04-04 10:00:00', NOW()),
+       (8, 1, 'CONFIRMED', '2026-04-05 10:00:00', NOW());
+
+
+INSERT INTO waitlists (course_id, user_id, created_at, updated_at)
+VALUES (3, 1, '2026-04-10 10:00:00', NOW()),
+       (4, 1, '2026-04-11 10:00:00', NOW());
