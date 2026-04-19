@@ -1,11 +1,15 @@
 package com.project.course_registration_system.core.enrollment.domain;
 
 import com.project.course_registration_system.common.audting.BaseTimeEntity;
+import com.project.course_registration_system.core.course.domain.Course;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import lombok.AccessLevel;
@@ -24,15 +28,17 @@ public class Waitlist extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "course_id", nullable = false)
-    private Long courseId;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "course_id")
+    private Course course;
 
     @Column(name = "user_id", nullable = false)
     private Long userId;
 
     @Builder
-    private Waitlist(Long courseId, Long userId) {
-        this.courseId = courseId;
+    private Waitlist(Course course, Long userId) {
+        this.course = course;
         this.userId = userId;
     }
 }

@@ -6,7 +6,7 @@ public class WaitlistTestFixture {
     public static Waitlist create() {
         return Waitlist.builder()
                 .userId(2L)
-                .courseId(1L)
+                .course(CourseTestFixture.openCourse(10))
                 .build();
     }
 }

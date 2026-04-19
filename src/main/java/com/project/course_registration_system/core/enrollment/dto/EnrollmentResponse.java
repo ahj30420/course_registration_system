@@ -25,7 +25,7 @@ public record EnrollmentResponse(
     public static EnrollmentResponse from(Waitlist waitlist) {
         return new EnrollmentResponse(
                 waitlist.getId(),
-                waitlist.getCourseId(),
+                waitlist.getCourse().getId(),
                 waitlist.getUserId(),
                 EnrollmentStatus.WAITLISTED,
                 waitlist.getCreatedAt()
