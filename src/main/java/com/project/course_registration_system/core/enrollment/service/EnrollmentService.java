@@ -3,14 +3,17 @@ package com.project.course_registration_system.core.enrollment.service;
 import com.project.course_registration_system.common.exception.BaseException;
 import com.project.course_registration_system.common.exception.code.CourseErrorCode;
 import com.project.course_registration_system.common.exception.code.EnrollmentErrorCode;
+import com.project.course_registration_system.common.exception.code.WaitlistErrorCode;
 import com.project.course_registration_system.common.response.PageResponse;
 import com.project.course_registration_system.core.course.domain.Course;
+import com.project.course_registration_system.core.course.dto.response.CourseSummaryResponse;
 import com.project.course_registration_system.core.course.repository.CourseRepository;
 import com.project.course_registration_system.core.enrollment.domain.Enrollment;
 import com.project.course_registration_system.core.enrollment.domain.EnrollmentStatus;
 import com.project.course_registration_system.core.enrollment.domain.Waitlist;
 import com.project.course_registration_system.core.enrollment.dto.EnrollmentResponse;
 import com.project.course_registration_system.core.enrollment.dto.MyEnrollmentResponse;
+import com.project.course_registration_system.core.enrollment.dto.MyWaitlistRankResponse;
 import com.project.course_registration_system.core.enrollment.dto.MyWaitlistResponse;
 import com.project.course_registration_system.core.enrollment.repository.EnrollmentRepository;
 import com.project.course_registration_system.core.enrollment.repository.WaitlistRepository;
@@ -46,7 +49,7 @@ public class EnrollmentService {
             return enrollToCourse(course, userId);
         }
 
-        return addToWaitlist(courseId, userId);
+        return addToWaitlist(course, userId);
     }
 
     private void validateNotAlreadyEnrolled(Long courseId, Long userId) {
@@ -82,9 +85,9 @@ public class EnrollmentService {
         return EnrollmentResponse.from(enrollment);
     }
 
-    private EnrollmentResponse addToWaitlist(Long courseId, Long userId) {
+    private EnrollmentResponse addToWaitlist(Course course, Long userId) {
         Waitlist waitlist = Waitlist.builder()
-                .course(courseRepository.getReferenceById(courseId))
+                .course(course)
                 .userId(userId)
                 .build();
 
@@ -163,5 +166,29 @@ public class EnrollmentService {
         List<MyWaitlistResponse> content = pageWaitlist.getContent().stream()
                 .map(MyWaitlistResponse::from).toList();
         return PageResponse.from(pageWaitlist, content);
+    }
+
+    public MyWaitlistRankResponse getWaitlistRank(Long waitlistId, Long userId) {
+        Waitlist waitlist = getWaitlistOrThrow(waitlistId);
+
+        validateWaitlistOwner(waitlist, userId);
+
+        long aheadCount = waitlistRepository.countByCourseIdAndCreatedAtBefore(
+                waitlist.getCourse().getId(),
+                waitlist.getCreatedAt()
+        );
+
+        return MyWaitlistRankResponse.from(waitlist, aheadCount + 1);
+    }
+
+    private Waitlist getWaitlistOrThrow(Long waitlistId) {
+        return waitlistRepository.findById(waitlistId)
+                .orElseThrow(() -> new BaseException(WaitlistErrorCode.WAITLIST_NOT_FOUND));
+    }
+
+    private void validateWaitlistOwner(Waitlist waitlist, Long userId) {
+        if (!waitlist.isOwner(userId)) {
+            throw new BaseException(WaitlistErrorCode.NOT_WAITLIST_OWNER);
+        }
     }
 }

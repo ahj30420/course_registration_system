@@ -41,4 +41,8 @@ public class Waitlist extends BaseTimeEntity {
         this.course = course;
         this.userId = userId;
     }
+
+    public boolean isOwner(Long userId) {
+        return this.userId.equals(userId);
+    }
 }
