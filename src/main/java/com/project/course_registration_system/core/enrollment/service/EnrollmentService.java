@@ -3,17 +3,21 @@ package com.project.course_registration_system.core.enrollment.service;
 import com.project.course_registration_system.common.exception.BaseException;
 import com.project.course_registration_system.common.exception.code.CourseErrorCode;
 import com.project.course_registration_system.common.exception.code.EnrollmentErrorCode;
+import com.project.course_registration_system.common.response.PageResponse;
 import com.project.course_registration_system.core.course.domain.Course;
 import com.project.course_registration_system.core.course.repository.CourseRepository;
 import com.project.course_registration_system.core.enrollment.domain.Enrollment;
 import com.project.course_registration_system.core.enrollment.domain.EnrollmentStatus;
 import com.project.course_registration_system.core.enrollment.domain.Waitlist;
 import com.project.course_registration_system.core.enrollment.dto.EnrollmentResponse;
+import com.project.course_registration_system.core.enrollment.dto.MyEnrollmentResponse;
 import com.project.course_registration_system.core.enrollment.repository.EnrollmentRepository;
 import com.project.course_registration_system.core.enrollment.repository.WaitlistRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -127,18 +131,28 @@ public class EnrollmentService {
     }
 
     private void promoteFromWaitlist(Course course) {
-        if (!course.hasCapacity()) return;
+        if (!course.hasCapacity()) {
+            return;
+        }
 
         waitlistRepository.findFirstByCourseIdOrderByCreatedAtAsc(course.getId())
                 .ifPresent(waitlist -> {
-                   waitlistRepository.delete(waitlist);
-                   course.incrementEnrollmentCount();
-                   Enrollment promoted = Enrollment.builder()
-                           .course(course)
-                           .userId(waitlist.getUserId())
-                           .status(EnrollmentStatus.PENDING)
-                           .build();
-                   enrollmentRepository.save(promoted);
+                    waitlistRepository.delete(waitlist);
+                    course.incrementEnrollmentCount();
+                    Enrollment promoted = Enrollment.builder()
+                            .course(course)
+                            .userId(waitlist.getUserId())
+                            .status(EnrollmentStatus.PENDING)
+                            .build();
+                    enrollmentRepository.save(promoted);
                 });
+    }
+
+    public PageResponse<MyEnrollmentResponse> getMyEnrollments(Long userId, Pageable pageable) {
+        Page<Enrollment> pageEnrollment = enrollmentRepository.findByUserIdOrderByCreatedAtDesc(userId,
+                pageable);
+        List<MyEnrollmentResponse> content = pageEnrollment.getContent().stream()
+                .map(MyEnrollmentResponse::from).toList();
+        return PageResponse.from(pageEnrollment, content);
     }
 }
