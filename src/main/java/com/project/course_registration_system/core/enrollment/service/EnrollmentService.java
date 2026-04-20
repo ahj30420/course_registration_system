@@ -1,12 +1,14 @@
 package com.project.course_registration_system.core.enrollment.service;
 
+import static com.project.course_registration_system.common.cache.CacheNames.COURSE_DETAIL;
+import static com.project.course_registration_system.common.cache.CacheNames.COURSE_LIST;
+
 import com.project.course_registration_system.common.exception.BaseException;
 import com.project.course_registration_system.common.exception.code.CourseErrorCode;
 import com.project.course_registration_system.common.exception.code.EnrollmentErrorCode;
 import com.project.course_registration_system.common.exception.code.WaitlistErrorCode;
 import com.project.course_registration_system.common.response.PageResponse;
 import com.project.course_registration_system.core.course.domain.Course;
-import com.project.course_registration_system.core.course.dto.response.CourseSummaryResponse;
 import com.project.course_registration_system.core.course.repository.CourseRepository;
 import com.project.course_registration_system.core.enrollment.domain.Enrollment;
 import com.project.course_registration_system.core.enrollment.domain.EnrollmentStatus;
@@ -21,6 +23,8 @@ import com.project.course_registration_system.core.enrollment.repository.Waitlis
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -39,6 +43,10 @@ public class EnrollmentService {
     private int cancellationDays;
 
     @Transactional
+    @Caching(evict = {
+            @CacheEvict(cacheNames = COURSE_LIST, allEntries = true),
+            @CacheEvict(cacheNames = COURSE_DETAIL, key = "#courseId")
+    })
     public EnrollmentResponse enroll(Long courseId, Long userId) {
         validateNotAlreadyEnrolled(courseId, userId);
 
@@ -116,6 +124,10 @@ public class EnrollmentService {
     }
 
     @Transactional
+    @Caching(evict = {
+            @CacheEvict(cacheNames = COURSE_LIST, allEntries = true),
+            @CacheEvict(cacheNames = COURSE_DETAIL, key = "#result.courseId()", condition = "#result != null")
+    })
     public EnrollmentResponse cancel(Long enrollmentId, Long userId) {
         Enrollment enrollment = getEnrollmentOrThrow(enrollmentId);
 
