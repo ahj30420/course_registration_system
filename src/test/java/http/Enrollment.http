@@ -24,3 +24,7 @@ USER-ID: 2
 ### 내 대기열 순번 조회
 GET http://localhost:8080/api/enrollments/my/waitlist/4/rank
 USER-ID: 5
+
+### 강의별 수강생 목록 조회 (크리에이터 전용)
+GET http://localhost:8080/api/courses/1/enrollments?page=0&size=1&sort=createdAt,desc
+CREATOR-ID: 1

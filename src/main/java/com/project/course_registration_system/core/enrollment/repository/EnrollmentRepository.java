@@ -21,4 +21,13 @@ public interface EnrollmentRepository extends JpaRepository<Enrollment, Long> {
             countQuery = "select count(e) from Enrollment e where e.userId = :userId"
     )
     Page<Enrollment> findByUserIdOrderByCreatedAtDesc(@Param("userId") Long userId, Pageable pageable);
+
+    @Query(
+            value = "select e from Enrollment e where e.course.id = :courseId and e.status in :statuses order by e.createdAt desc"
+    )
+    Page<Enrollment> findByCourseIdAndStatusInOrderByCreatedAtDesc(
+            @Param("courseId") Long courseId,
+            @Param("statuses") List<EnrollmentStatus> statuses,
+            Pageable pageable
+    );
 }

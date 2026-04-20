@@ -2,6 +2,7 @@ package com.project.course_registration_system.core.enrollment.controller;
 
 import com.project.course_registration_system.common.response.ApiResponse;
 import com.project.course_registration_system.common.response.PageResponse;
+import com.project.course_registration_system.core.enrollment.dto.CourseEnrollmentResponse;
 import com.project.course_registration_system.core.enrollment.dto.EnrollmentResponse;
 import com.project.course_registration_system.core.enrollment.dto.MyEnrollmentResponse;
 import com.project.course_registration_system.core.enrollment.dto.MyWaitlistRankResponse;
@@ -9,9 +10,7 @@ import com.project.course_registration_system.core.enrollment.dto.MyWaitlistResp
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -132,5 +131,27 @@ public interface EnrollmentSpec {
                     example = "1"
             )
             @RequestHeader("USER-ID") Long userId
+    );
+
+    @Operation(
+            summary = "강의별 수강생 목록 조회",
+            description = "강의 생성자(CREATOR-ID)가 본인 강의의 수강생 목록을 최신순으로 페이지 조회합니다."
+    )
+    ResponseEntity<ApiResponse<PageResponse<CourseEnrollmentResponse>>> getCourseEnrollments(
+            @Parameter(
+                    description = "강의 ID",
+                    required = true,
+                    example = "1"
+            )
+            @PathVariable Long courseId,
+
+            @Parameter(
+                    description = "강사 ID (Header)",
+                    required = true,
+                    example = "1"
+            )
+            @RequestHeader("CREATOR-ID") Long creatorId,
+
+            @PageableDefault Pageable pageable
     );
 }

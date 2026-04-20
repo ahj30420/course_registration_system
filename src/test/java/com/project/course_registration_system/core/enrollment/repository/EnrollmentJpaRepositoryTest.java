@@ -4,6 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.project.course_registration_system.common.config.QueryDSLConfig;
 import com.project.course_registration_system.core.enrollment.domain.Enrollment;
+import com.project.course_registration_system.core.enrollment.domain.EnrollmentStatus;
+import java.util.List;
 import org.hibernate.Hibernate;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,13 +24,14 @@ class EnrollmentJpaRepositoryTest {
 
     @Autowired
     private EnrollmentRepository sut;
+    @Autowired
+    private EnrollmentRepository enrollmentRepository;
 
     @Test
     @DisplayName("내 수강 신청 목록 조회 테스트: 페이징 및 페치 조인 확인")
     void findByUserId_with_paging_and_fetch_join() {
         // given
         Long userId = 1L;
-        // 첫 번째 페이지, 사이즈 3, 최신순 정렬
         PageRequest pageRequest = PageRequest.of(0, 3, Sort.by(Sort.Direction.DESC, "createdAt"));
 
         // when
@@ -57,4 +60,38 @@ class EnrollmentJpaRepositoryTest {
         assertThat(result.getTotalElements()).isZero();
     }
 
+    @Test
+    @DisplayName("강의별 수강생 목록 조회 테스트: 페이징 확인")
+    void findByCourseId_with_paging() throws Exception {
+        // given
+        Long courseId = 1L;
+        PageRequest pageRequest = PageRequest.of(0, 3, Sort.by(Sort.Direction.DESC, "createdAt"));
+        List<EnrollmentStatus> statusList = List.of(EnrollmentStatus.PENDING, EnrollmentStatus.CONFIRMED);
+
+        // when
+        Page<Enrollment> result = enrollmentRepository.findByCourseIdAndStatusInOrderByCreatedAtDesc(
+                courseId, statusList, pageRequest);
+
+        // then
+        assertThat(result.getContent()).hasSize(2);
+        assertThat(result.getTotalElements()).isEqualTo(2);
+        assertThat(result.getTotalPages()).isEqualTo(1);
+    }
+
+    @Test
+    @DisplayName("강의별 수강생 목록 조회 테스트: 빈 결과 확인")
+    void findByCourseId_returns_empty_page_when_no_data() throws Exception {
+        // given
+        Long courseId = 999L;
+        PageRequest pageRequest = PageRequest.of(0, 3, Sort.by(Sort.Direction.DESC, "createdAt"));
+        List<EnrollmentStatus> statusList = List.of(EnrollmentStatus.PENDING, EnrollmentStatus.CONFIRMED);
+
+        // when
+        Page<Enrollment> result = enrollmentRepository.findByCourseIdAndStatusInOrderByCreatedAtDesc(
+                courseId, statusList, pageRequest);
+
+        // then
+        assertThat(result.isEmpty()).isTrue();
+        assertThat(result.getTotalElements()).isZero();
+    }
 }
