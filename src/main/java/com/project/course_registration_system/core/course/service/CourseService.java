@@ -1,8 +1,10 @@
 package com.project.course_registration_system.core.course.service;
 
+import static com.project.course_registration_system.common.cache.CacheNames.COURSE_DETAIL;
+import static com.project.course_registration_system.common.cache.CacheNames.COURSE_LIST;
+
 import com.project.course_registration_system.common.exception.BaseException;
 import com.project.course_registration_system.common.exception.code.CourseErrorCode;
-import com.project.course_registration_system.common.exception.code.EnrollmentErrorCode;
 import com.project.course_registration_system.core.course.domain.Course;
 import com.project.course_registration_system.core.course.domain.CourseStatus;
 import com.project.course_registration_system.core.course.dto.request.CreateCourseRequest;
@@ -12,6 +14,9 @@ import com.project.course_registration_system.core.course.repository.CourseRepos
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,6 +29,7 @@ public class CourseService {
     private final CourseRepository courseRepository;
 
     @Transactional
+    @CacheEvict(cacheNames = COURSE_LIST, allEntries = true)
     public CourseResponse create(CreateCourseRequest request, Long creatorId) {
         Course course = Course.builder()
                 .title(request.title())
@@ -39,16 +45,22 @@ public class CourseService {
         return CourseResponse.from(saved);
     }
 
+    @Cacheable(cacheNames = COURSE_LIST, key = "#status == null ? 'ALL' : #status.name()")
     public List<CourseSummaryResponse> getList(CourseStatus status) {
         return courseRepository.getCourseSummaries(status);
     }
 
+    @Cacheable(cacheNames = COURSE_DETAIL, key = "#courseId")
     public CourseResponse getDetail(Long courseId) {
         Course course = getCourseOrThrow(courseId);
         return CourseResponse.from(course);
     }
 
     @Transactional
+    @Caching(evict = {
+            @CacheEvict(cacheNames = COURSE_LIST, allEntries = true),
+            @CacheEvict(cacheNames = COURSE_DETAIL, key = "#courseId")
+    })
     public CourseResponse changeStatus(Long courseId, Long creatorId, CourseStatus status) {
         Course course = getCourseOrThrow(courseId);
         validateCourseOwner(course, creatorId);
