@@ -9,6 +9,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.project.course_registration_system.common.exception.BaseException;
+import com.project.course_registration_system.common.exception.code.CourseErrorCode;
 import com.project.course_registration_system.common.exception.code.EnrollmentErrorCode;
 import com.project.course_registration_system.common.response.PageResponse;
 import com.project.course_registration_system.core.course.domain.Course;
@@ -16,6 +17,7 @@ import com.project.course_registration_system.core.course.repository.CourseRepos
 import com.project.course_registration_system.core.enrollment.domain.Enrollment;
 import com.project.course_registration_system.core.enrollment.domain.EnrollmentStatus;
 import com.project.course_registration_system.core.enrollment.domain.Waitlist;
+import com.project.course_registration_system.core.enrollment.dto.CourseEnrollmentResponse;
 import com.project.course_registration_system.core.enrollment.dto.EnrollmentResponse;
 import com.project.course_registration_system.core.enrollment.dto.MyEnrollmentResponse;
 import com.project.course_registration_system.core.enrollment.dto.MyWaitlistResponse;
@@ -274,6 +276,50 @@ class EnrollmentServiceTest {
         assertThat(result.totalElements()).isEqualTo(1);
         assertThat(result.totalPages()).isEqualTo(1);
         assertThat(result.content().getFirst().waitlistId()).isEqualTo(waitlist.getId());
+    }
+
+    @Test
+    @DisplayName("강의별 수강생 목록 조회 테스트: 성공[강의 생성자만 조회 가능]")
+    void getCourseEnrollments_returns_page_when_course_owner() {
+        // given
+        Long courseId = 1L;
+        Long creatorId = 1L;
+        Pageable pageable = PageRequest.of(0, 10);
+        Course course = CourseTestFixture.openCourse(10);
+        Enrollment enrollment = EnrollmentTestFixture.create(EnrollmentStatus.PENDING);
+
+        given(courseRepository.findById(courseId)).willReturn(Optional.of(course));
+        given(enrollmentRepository.findByCourseIdAndStatusInOrderByCreatedAtDesc(
+                courseId,
+                List.of(EnrollmentStatus.PENDING, EnrollmentStatus.CONFIRMED),
+                pageable
+        )).willReturn(new PageImpl<>(List.of(enrollment), pageable, 1));
+
+        // when
+        PageResponse<CourseEnrollmentResponse> result = sut.getCourseEnrollments(courseId, creatorId, pageable);
+
+        // then
+        assertThat(result.content()).hasSize(1);
+        assertThat(result.totalElements()).isEqualTo(1);
+        assertThat(result.content().getFirst().userId()).isEqualTo(enrollment.getUserId());
+    }
+
+    @Test
+    @DisplayName("강의별 수강생 목록 조회 테스트: 실패[강의 생성자가 아닌 경우]")
+    void getCourseEnrollments_fail_when_not_course_owner() {
+        // given
+        Long courseId = 1L;
+        Long notCreatorId = 99L;
+        Pageable pageable = PageRequest.of(0, 10);
+        Course course = CourseTestFixture.openCourse(10);
+
+        given(courseRepository.findById(courseId)).willReturn(Optional.of(course));
+
+        // when & then
+        assertThatThrownBy(() -> sut.getCourseEnrollments(courseId, notCreatorId, pageable))
+                .isInstanceOf(BaseException.class)
+                .hasMessage(CourseErrorCode.NOT_COURSE_OWNER.getMessage());
+        verify(enrollmentRepository, never()).findByCourseIdAndStatusInOrderByCreatedAtDesc(any(), any(), any());
     }
 
 }
