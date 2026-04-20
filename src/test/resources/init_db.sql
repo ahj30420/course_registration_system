@@ -79,7 +79,12 @@ VALUES (1, 1, 'CONFIRMED', '2026-04-01 10:00:00', NOW()),
        (2, 1, 'PENDING', '2026-04-02 10:00:00', NOW()),
        (5, 1, 'CONFIRMED', '2026-04-03 10:00:00', NOW()),
        (6, 1, 'PENDING', '2026-04-04 10:00:00', NOW()),
-       (8, 1, 'CONFIRMED', '2026-04-05 10:00:00', NOW());
+       (8, 1, 'CONFIRMED', '2026-04-05 10:00:00', NOW()),
+       (1, 2, 'CONFIRMED', '2026-04-02 10:00:00', NOW()),
+       (2, 2, 'PENDING', '2026-04-03 10:00:00', NOW()),
+       (5, 2, 'CONFIRMED', '2026-04-04 10:00:00', NOW()),
+       (6, 2, 'PENDING', '2026-04-05 10:00:00', NOW()),
+       (8, 2, 'CONFIRMED', '2026-04-06 10:00:00', NOW());
 
 
 INSERT INTO waitlists (course_id, user_id, created_at, updated_at)
