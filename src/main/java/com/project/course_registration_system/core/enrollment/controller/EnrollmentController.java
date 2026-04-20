@@ -3,6 +3,7 @@ package com.project.course_registration_system.core.enrollment.controller;
 import com.project.course_registration_system.common.response.ApiResponse;
 import com.project.course_registration_system.common.response.PageResponse;
 import com.project.course_registration_system.common.util.UrlCreator;
+import com.project.course_registration_system.core.enrollment.dto.CourseEnrollmentResponse;
 import com.project.course_registration_system.core.enrollment.dto.EnrollmentResponse;
 import com.project.course_registration_system.core.enrollment.dto.MyEnrollmentResponse;
 import com.project.course_registration_system.core.enrollment.dto.MyWaitlistRankResponse;
@@ -93,6 +94,19 @@ public class EnrollmentController implements EnrollmentSpec {
     ) {
         MyWaitlistRankResponse data = enrollmentService.getWaitlistRank(waitlistId, userId);
         ApiResponse<MyWaitlistRankResponse> response = new ApiResponse<>(data);
+        return ResponseEntity.ok(response);
+    }
+
+    @Override
+    @GetMapping("/courses/{courseId}/enrollments")
+    public ResponseEntity<ApiResponse<PageResponse<CourseEnrollmentResponse>>> getCourseEnrollments(
+            @PathVariable Long courseId,
+            @RequestHeader("CREATOR-ID") Long creatorId,
+            @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
+    ) {
+        PageResponse<CourseEnrollmentResponse> data =
+                enrollmentService.getCourseEnrollments(courseId, creatorId, pageable);
+        ApiResponse<PageResponse<CourseEnrollmentResponse>> response = new ApiResponse<>(data);
         return ResponseEntity.ok(response);
     }
 }
