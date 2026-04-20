@@ -11,6 +11,7 @@ import com.project.course_registration_system.core.course.repository.CourseRepos
 import com.project.course_registration_system.core.enrollment.domain.Enrollment;
 import com.project.course_registration_system.core.enrollment.domain.EnrollmentStatus;
 import com.project.course_registration_system.core.enrollment.domain.Waitlist;
+import com.project.course_registration_system.core.enrollment.dto.CourseEnrollmentResponse;
 import com.project.course_registration_system.core.enrollment.dto.EnrollmentResponse;
 import com.project.course_registration_system.core.enrollment.dto.MyEnrollmentResponse;
 import com.project.course_registration_system.core.enrollment.dto.MyWaitlistRankResponse;
@@ -168,6 +169,26 @@ public class EnrollmentService {
         return PageResponse.from(pageWaitlist, content);
     }
 
+    public PageResponse<CourseEnrollmentResponse> getCourseEnrollments(Long courseId, Long creatorId,
+                                                                       Pageable pageable) {
+        Course course = getCourseOrThrow(courseId);
+        validateCourseOwner(course, creatorId);
+
+        Page<Enrollment> pageEnrollment = enrollmentRepository.findByCourseIdAndStatusInOrderByCreatedAtDesc(
+                courseId,
+                List.of(EnrollmentStatus.PENDING, EnrollmentStatus.CONFIRMED),
+                pageable
+        );
+        List<CourseEnrollmentResponse> content = pageEnrollment.getContent().stream()
+                .map(CourseEnrollmentResponse::from).toList();
+        return PageResponse.from(pageEnrollment, content);
+    }
+
+    private Course getCourseOrThrow(Long courseId) {
+        return courseRepository.findById(courseId)
+                .orElseThrow(() -> new BaseException(CourseErrorCode.COURSE_NOT_FOUND));
+    }
+
     public MyWaitlistRankResponse getWaitlistRank(Long waitlistId, Long userId) {
         Waitlist waitlist = getWaitlistOrThrow(waitlistId);
 
@@ -189,6 +210,12 @@ public class EnrollmentService {
     private void validateWaitlistOwner(Waitlist waitlist, Long userId) {
         if (!waitlist.isOwner(userId)) {
             throw new BaseException(WaitlistErrorCode.NOT_WAITLIST_OWNER);
+        }
+    }
+
+    private void validateCourseOwner(Course course, Long creatorId) {
+        if (!course.isOwner(creatorId)) {
+            throw new BaseException(CourseErrorCode.NOT_COURSE_OWNER);
         }
     }
 }
