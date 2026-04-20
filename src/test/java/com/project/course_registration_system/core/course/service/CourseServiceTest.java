@@ -143,7 +143,7 @@ class CourseServiceTest {
         assertThatThrownBy(() ->
                 sut.changeStatus(courseId, creatorId, CourseStatus.OPEN))
                 .isInstanceOf(BaseException.class)
-                .hasMessage(CourseErrorCode.NOT_ENROLLMENT_OWNER.getMessage());
+                .hasMessage(CourseErrorCode.NOT_COURSE_OWNER.getMessage());
     }
 
     @Test

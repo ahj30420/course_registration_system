@@ -63,7 +63,7 @@ public class CourseService {
 
     private void validateCourseOwner(Course course, Long creatorId) {
         if (!course.isOwner(creatorId)) {
-            throw new BaseException(CourseErrorCode.NOT_ENROLLMENT_OWNER);
+            throw new BaseException(CourseErrorCode.NOT_COURSE_OWNER);
         }
     }
 }
