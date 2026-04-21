@@ -23,7 +23,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest
 @ActiveProfiles("test")
-public class EnrollmentServiceUnitTest {
+public class EnrollmentServiceIntegrationTest {
 
     @Autowired
     private EnrollmentService enrollmentService;
