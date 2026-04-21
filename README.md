@@ -35,7 +35,8 @@ H2 콘솔: `http://localhost:8080/h2-console` (JDBC URL: `jdbc:h2:mem:course_reg
 
 ## API 목록 및 예시
 
-> 상세 요청/응답 예시는 `src/test/java/http` 참고
+> 상세 요청/응답 예시는 `src/test/java/http` 참고해주세요  
+Swagger UI: http://localhost:8080/swagger-ui/index.html
 
 ### Course API
 
@@ -53,8 +54,6 @@ H2 콘솔: `http://localhost:8080/h2-console` (JDBC URL: `jdbc:h2:mem:course_reg
 - `GET /api/enrollments/my/waitlist` : 내 대기열 목록 (페이지네이션)
 - `GET /api/enrollments/my/waitlist/{waitlistId}/rank` : 내 대기 순번 조회
 - `GET /api/courses/{courseId}/enrollments` : 강의별 수강생 목록 조회 (CREATOR 전용)
-
-Swagger UI: http://localhost:8080/swagger-ui/index.html
 
 ---
 
@@ -123,24 +122,6 @@ waitlists (대기열)
 
 7. 동시성 가정
     - 마지막 좌석/동시 취소 등 충돌이 빈번할 수 있는 구간은 DB 락 기반으로 정합성을 우선합니다.
-
----
-
-## 설계 결정과 이유
-
-### 비관적 락 (Pessimistic Lock) 선택
-
-동시에 여러 사용자가 마지막 자리에 신청하는 경우를 처리하기 위해 `SELECT ... FOR UPDATE`를 사용합니다.
-
-```java
-
-@Lock(LockModeType.PESSIMISTIC_WRITE)
-@Query("SELECT c FROM Course c WHERE c.id = :id")
-Optional<Course> findByIdWithLock(@Param("id") Long id);
-```
-
-- **낙관적 락** 대비 장점: 정원 초과 시 재시도 로직 없이 첫 트랜잭션이 블로킹하여 순서 보장
-- **트레이드오프**: 처리량(throughput)이 낙관적 락보다 낮지만, 수강 신청 도메인의 특성상 정합성이 더 중요
 
 ---
 
