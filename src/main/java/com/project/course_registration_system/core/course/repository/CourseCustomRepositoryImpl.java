@@ -3,7 +3,7 @@ package com.project.course_registration_system.core.course.repository;
 import static com.project.course_registration_system.core.course.domain.QCourse.course;
 
 import com.project.course_registration_system.core.course.domain.CourseStatus;
-import com.project.course_registration_system.core.course.dto.response.CourseSummaryResponse;
+import com.project.course_registration_system.core.course.dto.CourseSummaryResponse;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;

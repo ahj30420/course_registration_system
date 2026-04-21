@@ -4,7 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.project.course_registration_system.common.config.QueryDSLConfig;
 import com.project.course_registration_system.core.course.domain.CourseStatus;
-import com.project.course_registration_system.core.course.dto.response.CourseSummaryResponse;
+import com.project.course_registration_system.core.course.dto.CourseSummaryResponse;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

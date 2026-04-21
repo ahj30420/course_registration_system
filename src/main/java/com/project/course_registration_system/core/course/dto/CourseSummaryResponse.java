@@ -1,4 +1,4 @@
-package com.project.course_registration_system.core.course.dto.response;
+package com.project.course_registration_system.core.course.dto;
 
 import com.project.course_registration_system.core.course.domain.CourseStatus;
 import lombok.Builder;
