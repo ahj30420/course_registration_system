@@ -12,7 +12,8 @@ public enum CourseErrorCode implements ErrorCode {
     INVALID_COURSE_CAPACITY(HttpStatus.BAD_REQUEST, "정원은 1명 이상이어야 합니다."),
     COURSE_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 강의가 존재하지 않습니다."),
     COURSE_CAPACITY_EXCEEDED(HttpStatus.CONFLICT, "강의 정원이 초과되었습니다."),
-    NOT_COURSE_OWNER(HttpStatus.FORBIDDEN, "해당 강의에 대한 권한이 없습니다.");
+    NOT_COURSE_OWNER(HttpStatus.FORBIDDEN, "해당 강의에 대한 권한이 없습니다."),
+    CANNOT_OPEN_COURSE(HttpStatus.BAD_REQUEST, "초안(DRAFT) 상태의 강의만 오픈할 수 있습니다.");
 
     private final HttpStatus status;
     private final String message;

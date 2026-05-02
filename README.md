@@ -43,7 +43,8 @@ Swagger UI: http://localhost:8080/swagger-ui/index.html
 - `POST /api/courses` : 강의 등록 (CREATOR-ID 헤더)
 - `GET /api/courses?status={DRAFT|OPEN|CLOSED}` : 강의 목록 조회 (상태 필터)
 - `GET /api/courses/{courseId}` : 강의 상세 조회
-- `PATCH /api/courses/{courseId}/status` : 강의 상태 변경 (CREATOR-ID 헤더)
+- `PATCH /api/courses/{courseId}/open` : 강의 오픈 (CREATOR-ID 헤더)
+- `PATCH /api/courses/{courseId}/close` : 강의 수강 모집 마감 (CREATOR-ID 헤더)
 
 ### Enrollment / Waitlist API
 

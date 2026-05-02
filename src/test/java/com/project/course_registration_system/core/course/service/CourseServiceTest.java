@@ -105,50 +105,78 @@ class CourseServiceTest {
                 .hasMessage(CourseErrorCode.COURSE_NOT_FOUND.getMessage());
     }
 
-
     @Test
-    @DisplayName("강의 상태 변경 테스트: 성공")
-    void change_status_success() throws Exception {
+    @DisplayName("강의 오픈 테스트: 성공")
+    void open_success() {
         // given
         Long courseId = 1L;
         Long creatorId = 1L;
-        CourseStatus newStatus = CourseStatus.OPEN;
-
         Course course = CourseTestFixture.create(CourseStatus.DRAFT);
 
         when(courseRepository.findById(courseId)).thenReturn(Optional.of(course));
 
         // when
-        CourseResponse response = sut.changeStatus(courseId, creatorId, newStatus);
+        CourseResponse response = sut.open(courseId, creatorId);
 
         // then
-        assertThat(response.status()).isEqualTo(newStatus);
-        assertThat(course.getStatus()).isEqualTo(newStatus);
+        assertThat(response.status()).isEqualTo(CourseStatus.OPEN);
+        assertThat(course.getStatus()).isEqualTo(CourseStatus.OPEN);
     }
 
     @Test
-    @DisplayName("강의 상태 변경 테스트: 실패[해당 강의에 권한이 없는 경우]")
-    void change_status_fail_when_is_not_owner() throws Exception {
+    @DisplayName("강의 오픈 테스트: 실패[작성자가 아닌 경우]")
+    void open_fail_not_owner() {
         // given
         Long courseId = 1L;
-        Long creatorId = 2L;
-        CourseStatus newStatus = CourseStatus.OPEN;
-
+        Long strangerId = 999L;
         Course course = CourseTestFixture.create(CourseStatus.DRAFT);
 
         when(courseRepository.findById(courseId)).thenReturn(Optional.of(course));
 
-
         // when & then
-        assertThatThrownBy(() ->
-                sut.changeStatus(courseId, creatorId, CourseStatus.OPEN))
+        assertThatThrownBy(() -> sut.open(courseId, strangerId))
                 .isInstanceOf(BaseException.class)
                 .hasMessage(CourseErrorCode.NOT_COURSE_OWNER.getMessage());
     }
 
     @Test
-    @DisplayName("강의 상태 변경 테스트: 실패[강의가 존재하지 않는 경우]")
-    void change_status_fail_not_found() throws Exception {
+    @DisplayName("강의 오픈 테스트: 실패[DRAFT 상태가 아닌 경우]")
+    void open_fail_invalid_status() {
+        // given
+        Long courseId = 1L;
+        Long creatorId = 1L;
+
+        Course course = CourseTestFixture.create(CourseStatus.CLOSED);
+
+        when(courseRepository.findById(courseId)).thenReturn(Optional.of(course));
+
+        // when & then
+        assertThatThrownBy(() -> sut.open(courseId, creatorId))
+                .isInstanceOf(BaseException.class)
+                .hasMessage(CourseErrorCode.CANNOT_OPEN_COURSE.getMessage());
+    }
+
+    @Test
+    @DisplayName("강의 마감 테스트: 성공")
+    void close_success() {
+        // given
+        Long courseId = 1L;
+        Long creatorId = 1L;
+        Course course = CourseTestFixture.create(CourseStatus.OPEN);
+
+        when(courseRepository.findById(courseId)).thenReturn(Optional.of(course));
+
+        // when
+        CourseResponse response = sut.close(courseId, creatorId);
+
+        // then
+        assertThat(response.status()).isEqualTo(CourseStatus.CLOSED);
+        assertThat(course.getStatus()).isEqualTo(CourseStatus.CLOSED);
+    }
+
+    @Test
+    @DisplayName("강의 마감 테스트: 실패[강의가 존재하지 않는 경우]")
+    void close_fail_not_found() {
         // given
         Long courseId = -1L;
         Long creatorId = 1L;
@@ -156,8 +184,7 @@ class CourseServiceTest {
         when(courseRepository.findById(courseId)).thenReturn(Optional.empty());
 
         // when & then
-        assertThatThrownBy(() ->
-                sut.changeStatus(courseId, creatorId, CourseStatus.OPEN))
+        assertThatThrownBy(() -> sut.close(courseId, creatorId))
                 .isInstanceOf(BaseException.class)
                 .hasMessage(CourseErrorCode.COURSE_NOT_FOUND.getMessage());
     }

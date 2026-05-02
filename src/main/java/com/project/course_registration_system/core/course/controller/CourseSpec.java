@@ -66,10 +66,10 @@ public interface CourseSpec {
 
 
     @Operation(
-            summary = "강의 상태 변경",
-            description = "강의 상태를 변경합니다."
+            summary = "강의 오픈",
+            description = "강의를 오픈합니다."
     )
-    ResponseEntity<ApiResponse<CourseResponse>> changeStatus(
+    ResponseEntity<ApiResponse<CourseResponse>> open(
             @Parameter(
                     description = "강의 ID",
                     required = true
@@ -80,12 +80,24 @@ public interface CourseSpec {
                     description = "강사 ID (Header)",
                     required = true
             )
-            @RequestHeader("CREATOR-ID") Long creatorId,
+            @RequestHeader("CREATOR-ID") Long creatorId
+    );
 
+    @Operation(
+            summary = "강의 모집 마감",
+            description = "수강생 모집을 마감합니다."
+    )
+    ResponseEntity<ApiResponse<CourseResponse>> close(
             @Parameter(
-                    description = "변경된 강의 상태",
+                    description = "강의 ID",
                     required = true
             )
-            @Valid @RequestBody UpdateCourseStatusRequest request
+            @PathVariable Long courseId,
+
+            @Parameter(
+                    description = "강사 ID (Header)",
+                    required = true
+            )
+            @RequestHeader("CREATOR-ID") Long creatorId
     );
 }
