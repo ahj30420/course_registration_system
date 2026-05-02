@@ -3,7 +3,6 @@ package com.project.course_registration_system.core.course.controller;
 import com.project.course_registration_system.common.response.ApiResponse;
 import com.project.course_registration_system.common.util.UrlCreator;
 import com.project.course_registration_system.core.course.domain.CourseStatus;
-import com.project.course_registration_system.core.course.dto.UpdateCourseStatusRequest;
 import com.project.course_registration_system.core.course.dto.request.CreateCourseRequest;
 import com.project.course_registration_system.core.course.dto.response.CourseResponse;
 import com.project.course_registration_system.core.course.dto.response.CourseSummaryResponse;
@@ -64,14 +63,25 @@ public class CourseController implements CourseSpec {
     }
 
     @Override
-    @PatchMapping("/{courseId}/status")
-    public ResponseEntity<ApiResponse<CourseResponse>> changeStatus(
+    @PatchMapping("/{courseId}/open")
+    public ResponseEntity<ApiResponse<CourseResponse>> open(
             @PathVariable Long courseId,
-            @RequestHeader("CREATOR-ID") Long creatorId,
-            @Valid @RequestBody UpdateCourseStatusRequest request
+            @RequestHeader("CREATOR-ID") Long creatorId
     ) {
-        CourseResponse data = courseService.changeStatus(courseId, creatorId, request.status());
+        CourseResponse data = courseService.open(courseId, creatorId);
         ApiResponse<CourseResponse> response = new ApiResponse<>(data);
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok().body(response);
     }
+
+    @Override
+    @PatchMapping("/{courseId}/close")
+    public ResponseEntity<ApiResponse<CourseResponse>> close(
+            @PathVariable Long courseId,
+            @RequestHeader("CREATOR-ID") Long creatorId
+    ) {
+        CourseResponse data = courseService.close(courseId, creatorId);
+        ApiResponse<CourseResponse> response = new ApiResponse<>(data);
+        return ResponseEntity.ok().body(response);
+    }
+
 }

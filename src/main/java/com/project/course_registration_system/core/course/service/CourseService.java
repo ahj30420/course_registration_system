@@ -61,12 +61,25 @@ public class CourseService {
             @CacheEvict(cacheNames = COURSE_LIST, allEntries = true),
             @CacheEvict(cacheNames = COURSE_DETAIL, key = "#courseId")
     })
-    public CourseResponse changeStatus(Long courseId, Long creatorId, CourseStatus status) {
+    public CourseResponse open(Long courseId, Long creatorId) {
         Course course = getCourseOrThrow(courseId);
         validateCourseOwner(course, creatorId);
-        course.changeStatus(status);
+        course.open();
         return CourseResponse.from(course);
     }
+
+    @Transactional
+    @Caching(evict = {
+            @CacheEvict(cacheNames = COURSE_LIST, allEntries = true),
+            @CacheEvict(cacheNames = COURSE_DETAIL, key = "#courseId")
+    })
+    public CourseResponse close(Long courseId, Long creatorId) {
+        Course course = getCourseOrThrow(courseId);
+        validateCourseOwner(course, creatorId);
+        course.close();
+        return CourseResponse.from(course);
+    }
+
 
     private Course getCourseOrThrow(Long courseId) {
         return courseRepository.findById(courseId)

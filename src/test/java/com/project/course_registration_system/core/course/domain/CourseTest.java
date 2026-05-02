@@ -5,12 +5,9 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.project.course_registration_system.common.exception.BaseException;
 import com.project.course_registration_system.common.exception.code.CourseErrorCode;
-import com.project.course_registration_system.core.enrollment.domain.Enrollment;
-import com.project.course_registration_system.core.enrollment.domain.EnrollmentStatus;
-import com.project.course_registration_system.core.fixtures.CourseTestFixture;
 import java.time.LocalDate;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 class CourseTest {
 
@@ -107,27 +104,61 @@ class CourseTest {
     }
 
     @Test
-    @DisplayName("강의 상태 변경 테스트: 성공")
-    void change_status_success() throws Exception {
+    @DisplayName("강의 오픈 테스트: 성공[DRAFT 상태에서 OPEN으로 변경]")
+    void open_success() {
         // given
-        CourseStatus newStatus = CourseStatus.OPEN;
-
-        Course course = new Course().builder()
-                .title("테스트 강의")
-                .description("설명")
-                .price(1000L)
+        Course course = Course.builder()
                 .capacity(10)
-                .creatorId(1L)
+                .price(1000L)
                 .startDate(LocalDate.now())
                 .endDate(LocalDate.now().plusDays(30))
                 .status(CourseStatus.DRAFT)
                 .build();
 
         // when
-        course.changeStatus(newStatus);
+        course.open();
 
         // then
-        assertThat(course.getStatus()).isEqualTo(newStatus);
+        assertThat(course.getStatus()).isEqualTo(CourseStatus.OPEN);
+        assertThat(course.isOpen()).isTrue();
+    }
+
+    @Test
+    @DisplayName("강의 오픈 테스트: 실패[DRAFT가 아닌 경우 예외 발생]")
+    void open_fail_invalid_status() {
+        // given
+        Course course = Course.builder()
+                .capacity(10)
+                .price(1000L)
+                .startDate(LocalDate.now())
+                .endDate(LocalDate.now().plusDays(30))
+                .status(CourseStatus.CLOSED)
+                .build();
+
+        // when & then
+        assertThatThrownBy(course::open)
+                .isInstanceOf(BaseException.class)
+                .hasMessage(CourseErrorCode.CANNOT_OPEN_COURSE.getMessage());
+    }
+
+    @Test
+    @DisplayName("강의 종료 테스트: 성공")
+    void close_success() {
+        // given
+        Course course = Course.builder()
+                .capacity(10)
+                .price(1000L)
+                .startDate(LocalDate.now())
+                .endDate(LocalDate.now().plusDays(30))
+                .status(CourseStatus.OPEN)
+                .build();
+
+        // when
+        course.close();
+
+        // then
+        assertThat(course.getStatus()).isEqualTo(CourseStatus.CLOSED);
+        assertThat(course.isOpen()).isFalse();
     }
 
     @Test
