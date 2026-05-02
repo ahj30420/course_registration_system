@@ -18,11 +18,12 @@ GET http://localhost:8080/api/courses?status=DRAFT
 ### 강의 상세 조회
 GET http://localhost:8080/api/courses/1
 
-### 강의 상태 변경
-PATCH http://localhost:8080/api/courses/1/status
+### 강의 오픈
+PATCH http://localhost:8080/api/courses/1/open
 Content-Type: application/json
 CREATOR-ID: 1
 
-{
-  "status": "OPEN"
-}
+### 강의 수강 모집 마감
+PATCH http://localhost:8080/api/courses/1/close
+Content-Type: application/json
+CREATOR-ID: 1

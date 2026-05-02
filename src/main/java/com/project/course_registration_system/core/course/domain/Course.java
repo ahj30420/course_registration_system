@@ -88,10 +88,15 @@ public class Course extends BaseTimeEntity {
         this.currentEnrollmentCount = 0;
     }
 
-    public void changeStatus(CourseStatus nextStatus) {
-        if (nextStatus != null) {
-            this.status = nextStatus;
+    public void open() {
+        if (this.status != CourseStatus.DRAFT) {
+            throw new BaseException(CourseErrorCode.CANNOT_OPEN_COURSE);
         }
+        this.status = CourseStatus.OPEN;
+    }
+
+    public void close() {
+        this.status = CourseStatus.CLOSED;
     }
 
     public boolean isOpen() {

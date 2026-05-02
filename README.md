@@ -42,7 +42,8 @@ H2 콘솔: `http://localhost:8080/h2-console` (JDBC URL: `jdbc:h2:mem:course_reg
 - `POST /api/courses` : 강의 등록 (CREATOR-ID 헤더)
 - `GET /api/courses?status={DRAFT|OPEN|CLOSED}` : 강의 목록 조회 (상태 필터)
 - `GET /api/courses/{courseId}` : 강의 상세 조회
-- `PATCH /api/courses/{courseId}/status` : 강의 상태 변경 (CREATOR-ID 헤더)
+- `PATCH /api/courses/{courseId}/open` : 강의 오픈 (CREATOR-ID 헤더)
+- `PATCH /api/courses/{courseId}/close` : 강의 수강 모집 마감 (CREATOR-ID 헤더)
 
 ### Enrollment / Waitlist API
 
@@ -79,8 +80,7 @@ enrollments (수강 신청)
 ├── user_id
 ├── status (PENDING | CONFIRMED | CANCELLED)
 ├── confirmed_at, cancelled_at
-├── created_at, updated_at
-└── UNIQUE(course_id, user_id) -- 중복 신청 방지
+└── created_at, updated_at
 
 waitlists (대기열)
 ├── id (PK)
