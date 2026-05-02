@@ -1,4 +1,4 @@
-package com.project.course_registration_system.core.course.dto.request;
+package com.project.course_registration_system.core.course.dto;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
