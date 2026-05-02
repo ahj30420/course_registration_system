@@ -80,7 +80,8 @@ enrollments (수강 신청)
 ├── user_id
 ├── status (PENDING | CONFIRMED | CANCELLED)
 ├── confirmed_at, cancelled_at
-└── created_at, updated_at
+├── created_at, updated_at
+└── UNIQUE(course_id, user_id) -- 중복 신청 방지
 
 waitlists (대기열)
 ├── id (PK)

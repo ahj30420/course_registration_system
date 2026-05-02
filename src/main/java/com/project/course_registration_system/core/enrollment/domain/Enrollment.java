@@ -24,7 +24,8 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
-@Table(name = "enrollments")
+@Table(name = "enrollments",
+        uniqueConstraints = @UniqueConstraint(columnNames = {"course_id", "user_id"}))
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Enrollment extends BaseTimeEntity {
 
