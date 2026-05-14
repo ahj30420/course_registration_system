@@ -7,10 +7,10 @@ interface Props {
     creatorId: string;
     onModeChange: (mode: Mode) => void;
     onUserIdChange: (id: string) => void;
-    onCreatorChange: (id: string) => void;
+    onCreatorIdChange: (id: string) => void;
 }
 
-export default function Header({mode, userId, creatorId, onModeChange, onUserIdChange, onCreatorChange}: Props) {
+export default function Header({mode, userId, creatorId, onModeChange, onUserIdChange, onCreatorIdChange}: Props) {
     return (
         <header className={styles.header}>
             <div className={styles.left}>
@@ -48,7 +48,7 @@ export default function Header({mode, userId, creatorId, onModeChange, onUserIdC
                         type="number"
                         className={styles.idInput}
                         value={creatorId}
-                        onChange={e => onCreatorChange(e.target.value)}
+                        onChange={e => onCreatorIdChange(e.target.value)}
                     />
                 </div>
             </div>

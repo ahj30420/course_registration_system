@@ -1,0 +1,30 @@
+.form { background: #fff; border-radius: 12px; border: 1px solid #e5e7eb; padding: 32px; max-width: 680px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+
+.title { font-size: 18px; font-weight: 700; color: #111827; margin: 0 0 24px; }
+
+.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
+
+.field { display: flex; flex-direction: column; gap: 6px; }
+.fieldFull { grid-column: 1 / -1; }
+.field label { font-size: 13px; font-weight: 600; color: #374151; }
+.field input,
+.field textarea {
+  padding: 9px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 14px;
+  color: #111827;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.12s;
+}
+.field input:focus,
+.field textarea:focus {
+  border-color: #1b4fa8;
+  box-shadow: 0 0 0 3px rgba(27,79,168,0.1);
+}
+.field textarea { resize: vertical; }
+
+.submitBtn { padding: 11px 32px; border: none; border-radius: 7px; background: #1b4fa8; color: #fff; font-size: 14px; font-weight: 700; cursor: pointer; transition: background 0.12s; }
+.submitBtn:hover:not(:disabled) { background: #174089; }
+.submitBtn:disabled { opacity: 0.5; cursor: not-allowed; }
