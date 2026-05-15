@@ -1,45 +1,208 @@
-.filterBar { display: flex; align-items: center; gap: 8px; margin-bottom: 24px; flex-wrap: wrap; }
-.filterLabel { font-size: 13px; color: #6b7280; font-weight: 600; }
-.filterBtn { padding: 6px 16px; border: 1px solid #d1d5db; border-radius: 20px; background: #fff; color: #374151; cursor: pointer; font-size: 13px; transition: all 0.12s; }
-.filterBtn:hover { border-color: #1b4fa8; color: #1b4fa8; }
-.filterBtnActive { background: #1b4fa8; border-color: #1b4fa8; color: #fff; }
-.refreshBtn { margin-left: auto; padding: 7px 16px; border: 1px solid #d1d5db; border-radius: 6px; background: #fff; color: #374151; cursor: pointer; font-size: 13px; transition: background 0.12s; }
-.refreshBtn:hover { background: #f3f4f6; }
+.filterBar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+}
 
-.loading { text-align: center; padding: 72px; color: #6b7280; font-size: 15px; }
-.errorMsg { text-align: center; padding: 40px; color: #dc2626; font-size: 14px; }
-.empty { text-align: center; padding: 72px; color: #9ca3af; font-size: 15px; }
+.filterLabel {
+    font-size: 13px;
+    color: #6b7280;
+    font-weight: 600;
+}
 
-.courseGrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+.filterBtn {
+    padding: 6px 16px;
+    border: 1px solid #d1d5db;
+    border-radius: 20px;
+    background: #fff;
+    color: #374151;
+    cursor: pointer;
+    font-size: 13px;
+    transition: all 0.12s;
+}
+
+.filterBtn:hover {
+    border-color: #1b4fa8;
+    color: #1b4fa8;
+}
+
+.filterBtnActive {
+    background: #1b4fa8;
+    border-color: #1b4fa8;
+    color: #fff;
+}
+
+.refreshBtn {
+    margin-left: auto;
+    padding: 7px 16px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    background: #fff;
+    color: #374151;
+    cursor: pointer;
+    font-size: 13px;
+    transition: background 0.12s;
+}
+
+.refreshBtn:hover {
+    background: #f3f4f6;
+}
+
+.loading {
+    text-align: center;
+    padding: 72px;
+    color: #6b7280;
+    font-size: 15px;
+}
+
+.errorMsg {
+    text-align: center;
+    padding: 40px;
+    color: #dc2626;
+    font-size: 14px;
+}
+
+.empty {
+    text-align: center;
+    padding: 72px;
+    color: #9ca3af;
+    font-size: 15px;
+}
+
+.courseGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+}
 
 .courseCard {
-  background: #fff;
-  border-radius: 10px;
-  border: 1px solid #e5e7eb;
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
-  transition: box-shadow 0.15s, transform 0.15s;
+    background: #fff;
+    border-radius: 10px;
+    border: 1px solid #e5e7eb;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+    transition: box-shadow 0.15s, transform 0.15s;
 }
-.courseCard:hover { box-shadow: 0 6px 16px rgba(0,0,0,0.1); transform: translateY(-2px); }
 
-.cardTop { display: flex; justify-content: space-between; align-items: center; }
-.courseIdLabel { font-size: 12px; color: #9ca3af; }
-.statusBadge { display: inline-block; padding: 4px 10px; border-radius: 12px; font-size: 12px; font-weight: 700; }
+.courseCard:hover {
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+}
 
-.courseTitle { font-size: 17px; font-weight: 700; color: #111827; margin: 0; line-height: 1.4; }
-.courseDesc { font-size: 13px; color: #6b7280; margin: 0; line-height: 1.6; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-.courseMeta { display: flex; gap: 14px; font-size: 13px; color: #374151; }
-.courseDates { font-size: 12px; color: #6b7280; }
+.cardTop {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
 
-.enrollBtn { margin-top: auto; padding: 11px; border: none; border-radius: 7px; background: #1b4fa8; color: #fff; font-size: 14px; font-weight: 700; cursor: pointer; transition: background 0.12s; }
-.enrollBtn:hover:not(:disabled) { background: #174089; }
-.enrollBtnDisabled { background: #e5e7eb !important; color: #9ca3af !important; cursor: not-allowed !important; }
+.courseIdLabel {
+    font-size: 12px;
+    color: #9ca3af;
+}
 
-.creatorActions { display: flex; gap: 8px; margin-top: auto; }
-.openBtn { flex: 1; padding: 9px; border: none; border-radius: 7px; background: #059669; color: #fff; font-size: 13px; font-weight: 700; cursor: pointer; transition: background 0.12s; }
-.openBtn:hover { background: #047857; }
-.closeBtn { flex: 1; padding: 9px; border: none; border-radius: 7px; background: #dc2626; color: #fff; font-size: 13px; font-weight: 700; cursor: pointer; transition: background 0.12s; }
-.closeBtn:hover { background: #b91c1c; }
+.statusBadge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.courseTitle {
+    font-size: 17px;
+    font-weight: 700;
+    color: #111827;
+    margin: 0;
+    line-height: 1.4;
+}
+
+.courseDesc {
+    font-size: 13px;
+    color: #6b7280;
+    margin: 0;
+    line-height: 1.6;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.courseMeta {
+    display: flex;
+    gap: 14px;
+    font-size: 13px;
+    color: #374151;
+}
+
+.courseDates {
+    font-size: 12px;
+    color: #6b7280;
+}
+
+.enrollBtn {
+    margin-top: auto;
+    padding: 11px;
+    border: none;
+    border-radius: 7px;
+    background: #1b4fa8;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.12s;
+}
+
+.enrollBtn:hover:not(:disabled) {
+    background: #174089;
+}
+
+.enrollBtnDisabled {
+    background: #e5e7eb !important;
+    color: #9ca3af !important;
+    cursor: not-allowed !important;
+}
+
+.creatorActions {
+    display: flex;
+    gap: 8px;
+    margin-top: auto;
+}
+
+.openBtn {
+    flex: 1;
+    padding: 9px;
+    border: none;
+    border-radius: 7px;
+    background: #059669;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.12s;
+}
+
+.openBtn:hover {
+    background: #047857;
+}
+
+.closeBtn {
+    flex: 1;
+    padding: 9px;
+    border: none;
+    border-radius: 7px;
+    background: #dc2626;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.12s;
+}
+
+.closeBtn:hover {
+    background: #b91c1c;
+}

@@ -1,20 +1,11 @@
 import { useState } from 'react';
 import client from '../api/client';
 import styles from './CreatorForm.module.css';
-import type {ShowMessage} from "../types/types.ts";
+import type {CourseForm, ShowMessage} from "../types/types.ts";
 
 interface Props {
     creatorId: string;
     onMessage: ShowMessage;
-}
-
-interface CourseForm {
-    title: string;
-    description: string;
-    price: number;
-    capacity: number;
-    startDate: string;
-    endDate: string;
 }
 
 const EMPTY_FORM: CourseForm = { title: '', description: '', price: 0, capacity: 30, startDate: '', endDate: '' };

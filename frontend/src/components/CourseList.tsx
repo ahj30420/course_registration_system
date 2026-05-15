@@ -1,8 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
 import client from '../api/client';
+import type { Course, Mode, ShowMessage } from '../types/types.ts';
+import { STATUS_LABEL, STATUS_COLOR, formatPrice, formatDate } from '../utils/utils.ts';
 import styles from './CourseList.module.css';
-import type {Course, Mode, ShowMessage} from "../types/types.ts";
-import {formatDate, formatPrice, STATUS_COLOR, STATUS_LABEL} from "../utils/utils.ts";
 
 interface Props {
     mode: Mode;
@@ -40,7 +40,7 @@ export default function CourseList({ mode, userId, creatorId, onMessage }: Props
             onMessage('success', '수강 신청이 완료되었습니다.');
         } catch (err: unknown) {
             const e = err as { response?: { data?: { body?: { message?: string } } } };
-            onMessage('error', e.response?.data?.body?.message ?? '수강 신청에 실패했습니다.');
+            onMessage('error', e.response?.data?.message ?? '수강 신청에 실패했습니다.');
         }
     };
 
@@ -52,7 +52,7 @@ export default function CourseList({ mode, userId, creatorId, onMessage }: Props
             fetchCourses();
         } catch (err: unknown) {
             const e = err as { response?: { data?: { body?: { message?: string } } } };
-            onMessage('error', e.response?.data?.body?.message ?? '강의 오픈에 실패했습니다.');
+            onMessage('error', e.response?.data?.message ?? '강의 오픈에 실패했습니다.');
         }
     };
 
@@ -63,7 +63,7 @@ export default function CourseList({ mode, userId, creatorId, onMessage }: Props
             fetchCourses();
         } catch (err: unknown) {
             const e = err as { response?: { data?: { body?: { message?: string } } } };
-            onMessage('error', e.response?.data?.body?.message ?? '강의 마감에 실패했습니다.');
+            onMessage('error', e.response?.data?.message ?? '강의 마감에 실패했습니다.');
         }
     };
 
@@ -110,7 +110,7 @@ export default function CourseList({ mode, userId, creatorId, onMessage }: Props
                             </div>
                             {(course.startDate || course.endDate) && (
                                 <div className={styles.courseDates}>
-                                    📅 {formatDate(course.startDate ? formatDate(course.startDate) : '-')} ~ {course.endDate ? formatDate(course.endDate) : '-'}
+                                    📅 {formatDate(course.startDate)} ~ {formatDate(course.endDate)}
                                 </div>
                             )}
                             {mode === 'student' && (
