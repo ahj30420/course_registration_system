@@ -1,0 +1,160 @@
+.sectionHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.sectionTitle {
+    font-size: 18px;
+    font-weight: 700;
+    color: #111827;
+    margin: 0;
+}
+
+.refreshBtn {
+    padding: 7px 16px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    background: #fff;
+    color: #374151;
+    cursor: pointer;
+    font-size: 13px;
+    transition: background 0.12s;
+}
+
+.refreshBtn:hover {
+    background: #f3f4f6;
+}
+
+.loading {
+    text-align: center;
+    padding: 72px;
+    color: #6b7280;
+    font-size: 15px;
+}
+
+.empty {
+    text-align: center;
+    padding: 72px;
+    color: #9ca3af;
+    font-size: 15px;
+}
+
+.enrollmentList {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.enrollmentCard {
+    background: #fff;
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+    padding: 18px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.enrollmentId {
+    font-size: 14px;
+    font-weight: 600;
+    color: #374151;
+}
+
+.courseTitle {
+    font-size: 14px;
+    color: #6b7280;
+}
+
+.statusBadge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.actions {
+    display: flex;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.confirmBtn {
+    padding: 8px 18px;
+    border: none;
+    border-radius: 6px;
+    background: #2563eb;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.12s;
+}
+
+.confirmBtn:hover {
+    background: #1d4ed8;
+}
+
+.cancelBtn {
+    padding: 8px 18px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    background: #fff;
+    color: #374151;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.12s;
+}
+
+.cancelBtn:hover {
+    border-color: #dc2626;
+    color: #dc2626;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    margin-top: 24px;
+    padding: 16px 0;
+}
+
+.pageBtn {
+    padding: 6px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 4px;
+    background: #fff;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.pageBtn:disabled {
+    background: #f3f4f6;
+    color: #9ca3af;
+    cursor: not-allowed;
+}
+
+.pageBtn:not(:disabled):hover {
+    background: #f9fafb;
+    border-color: #9ca3af;
+}
+
+.pageInfo {
+    font-size: 14px;
+    color: #4b5563;
+}
